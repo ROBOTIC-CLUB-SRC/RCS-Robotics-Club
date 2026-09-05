@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#070712"><meta name="description" content="RCS Robotics Club @ SASTRA — build, learn, compete.">
+<link rel="manifest" href="/manifest.json"><link rel="icon" href="/static/assets/rcs-logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css"><title>RCS Robotics Club @ SASTRA</title>
+</head>
+<body>
+<div class="grid-bg"></div>
+<header class="nav">
+  <a class="brand" href="#home"><img src="/static/assets/rcs-logo.jpg" alt="RCS logo"><span>RCS<span class="blue">.ROBOTICS</span></span></a>
+  <button class="nav-toggle" onclick="toggleNav()">☰</button>
+  <nav id="navLinks"><a href="#home">Home</a><a href="#about">About</a><a href="#members">Members</a><a href="#projects">Projects</a><a href="#events">Events</a><a href="#learn">Learn</a><a href="#play">Play</a><a href="#ideas">Ideas</a><a class="nav-app" href="/app">Club App ↗</a></nav>
+</header>
+
+<main>
+<section id="home" class="hero">
+  <div class="hero-copy">
+    <p class="eyebrow">SASTRA • ROBOTICS • EMBEDDED • AI</p>
+    <h1>BUILD THE <span>FUTURE.</span><br>ONE ROBOT AT A TIME.</h1>
+    <p class="hero-text">RCS Robotics Club @ SASTRA is a student-run space to learn, build, compete and turn wild ideas into working machines — from first GPIO blink to autonomous robots.</p>
+    <div class="cta-row"><a class="btn primary" href="#projects">Explore Builds</a><a class="btn ghost" href="#learn">Start Learning ↓</a></div>
+    <div class="stats"><div><b id="statProjects">—</b><small>Projects</small></div><div><b id="statMembers">—</b><small>Members</small></div><div><b id="statEvents">—</b><small>Events</small></div><div><b>09</b><small>Learning tracks</small></div></div>
+  </div>
+  <div class="robot-stage" id="robotStage">
+    <div class="hud hud-a">RCS / BOT-01<br><span>ONLINE</span></div>
+    <div class="hud hud-b">SENSOR<br><span id="sensorReadout">READY</span></div>
+    <div class="robot" id="flyingRobot" aria-label="Interactive flying robot">
+      <div class="antenna"></div><div class="ear left"></div><div class="ear right"></div>
+      <div class="bot-head"><div class="eye"></div><div class="eye"></div><div class="mouth"></div></div>
+      <div class="body-core"><div class="core-ring"></div><div class="core-dot"></div></div>
+      <div class="arm arm-l"></div><div class="arm arm-r"></div>
+      <div class="thruster t-l"></div><div class="thruster t-r"></div>
+    </div>
+    <div class="scan"></div><div class="floor-glow"></div>
+  </div>
+</section>
+
+<section id="about" class="section">
+  <div class="section-head"><p class="eyebrow">01 / ABOUT US</p><h2>Curiosity → <span>Capability.</span></h2></div>
+  <div class="about-grid"><article class="glass big"><h3>What is RCS?</h3><p>RCS Robotics Club @ SASTRA brings together students curious about robotics, embedded systems, automation, AI and intelligent machines. No prior experience required. Learn by building real things.</p><div class="pill-row"><span>🤖 Robotics</span><span>⚡ Embedded</span><span>🧠 AI / Vision</span><span>⚙️ Automation</span><span>🏁 Competitions</span></div></article>
+  <article class="glass"><div class="icon">01</div><h3>Learn</h3><p>Structured tracks from electronics and sensors to control, kinematics, ROS 2 and autonomy.</p></article>
+  <article class="glass"><div class="icon">02</div><h3>Build</h3><p>Turn concepts into prototypes with the club's project ecosystem and peer support.</p></article>
+  <article class="glass"><div class="icon">03</div><h3>Compete</h3><p>Robot races, hackathons, showcases and challenges that force ideas into reality.</p></article></div>
+</section>
+
+<section id="members" class="section">
+  <div class="section-head"><p class="eyebrow">02 / THE PEOPLE</p><h2>Meet the <span>Builders.</span></h2></div>
+  <div id="membersGrid" class="card-grid"></div>
+</section>
+
+<section id="projects" class="section">
+  <div class="section-head"><p class="eyebrow">03 / PROJECT LAB</p><h2>Ideas that <span>move.</span></h2></div>
+  <div id="projectsGrid" class="project-grid"></div>
+</section>
+
+<section id="events" class="section">
+  <div class="section-head"><p class="eyebrow">04 / WHAT'S NEXT</p><h2>Build days. <span>Big moments.</span></h2></div>
+  <div id="eventsGrid" class="event-list"></div>
+</section>
+
+<section id="learn" class="section">
+  <div class="section-head"><p class="eyebrow">05 / RCS ACADEMY</p><h2>Robotics from <span>zero → hero.</span></h2><p>Every interactive experience points back to a concept, so playing becomes learning.</p></div>
+  <div id="learningGrid" class="learning-grid"></div>
+</section>
+
+<section id="play" class="section play-section">
+  <div class="section-head"><p class="eyebrow">06 / RCS ARCADE</p><h2>Learn by <span>playing.</span></h2><p>Mini games designed around actual robotics ideas.</p></div>
+  <div class="play-grid">
+    <article class="game glass"><span class="game-tag">SENSORS</span><h3>Sensor Sprint</h3><p>Calibrate your virtual distance sensor and keep the robot in the safe zone.</p><button class="btn primary" onclick="startSensorGame()">Play now</button><div id="sensorGame" class="gamebox hidden"></div></article>
+    <article class="game glass"><span class="game-tag">CONTROL</span><h3>PID Pilot</h3><p>Move a bot toward the target by tuning proportional control.</p><button class="btn primary" onclick="startPIDGame()">Play now</button><div id="pidGame" class="gamebox hidden"></div></article>
+    <article class="game glass"><span class="game-tag">PATH PLANNING</span><h3>Warehouse Navigator</h3><p>Choose the shortest safe route through a robot warehouse grid.</p><button class="btn primary" onclick="startPathGame()">Play now</button><div id="pathGame" class="gamebox hidden"></div></article>
+  </div>
+  <div id="quizArea" class="quiz-wrap glass"><div><span class="game-tag">QUIZ ARENA</span><h3>Challenge your robot brain 🧠</h3><p>Pick a quiz, answer questions, get an instant explanation.</p></div><div id="quizList" class="quiz-list"></div></div>
+</section>
+
+<section id="ideas" class="section ideas">
+  <div class="idea-panel glass"><div class="section-head"><p class="eyebrow">07 / YOUR CALL</p><h2>What should <span>RCS build next?</span></h2><p>Tell the club what events, projects, workshops or games you'd actually show up for. Your idea goes straight into the club app.</p></div>
+    <form id="ideaForm" class="form-grid"><input name="name" placeholder="Your name"><input name="email" type="email" placeholder="Email (optional)"><select name="type"><option>event</option><option>project</option><option>workshop</option><option>game</option><option>other</option></select><input name="title" placeholder="Idea title" required><textarea name="message" rows="5" placeholder="Tell us what you want RCS to conduct..." required></textarea><button class="btn primary" type="submit">Send to RCS →</button><span id="ideaMsg" class="form-msg"></span></form>
+  </div>
+</section>
+</main>
+<footer><div class="brand"><img src="/static/assets/rcs-logo.jpg" alt=""><span>RCS<span class="blue">.ROBOTICS</span></span></div><p>Robotics Club @ SASTRA • Build. Learn. Compete.</p><a href="/app">Club App / Admin Portal ↗</a></footer>
+<script src="/static/app.js"></script>
+</body></html>
