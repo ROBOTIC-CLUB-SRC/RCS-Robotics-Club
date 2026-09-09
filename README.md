@@ -1,4 +1,4 @@
-# RCS Robotics Club @ SASTRA — Website + Club App
+# RCS Robotics Club @ SRC SASTRA — Website + Club App
 
 A full-stack starter for the RCS Robotics Club: a public robotics website plus a responsive, installable club-management web app.
 
