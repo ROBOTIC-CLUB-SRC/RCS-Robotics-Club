@@ -13,10 +13,10 @@ A full-stack starter for the RCS Robotics Club: a public robotics website plus a
 - Common login for Faculty + Members.
 - Role-based account field (ready to extend for faculty-only actions).
 - CRUD dashboard for members, projects, events, learning, quizzes and games.
-- Website feedback/requests are stored in the same SQLite database and appear in the app.
+- Website feedback/requests are stored in the same database and appear in the app.
 - Image upload API is included; content forms currently accept image URLs for simplicity.
 - PWA manifest so the app can be installed on a phone/desktop like an app.
-- SQLite for a simple MVP; easy to migrate to PostgreSQL later.
+- SQLite locally; PostgreSQL on Render.
 
 ## 1. Run locally
 
@@ -80,7 +80,7 @@ Do **not** commit `.env`, `data/rcs.db`, or uploaded private material.
 
 ## 4. Deployment
 
-For a simple deployment, this repo includes a `render.yaml` + `Procfile` for Render. It uses a small persistent disk for the SQLite `data/` directory, which is suitable for an MVP/demo. For a serious multi-editor club system, migrate to PostgreSQL.
+This repo includes a `render.yaml` + `Procfile` for Render. Render provisions a managed PostgreSQL database and injects its connection string as `DATABASE_URL`. When `DATABASE_URL` is absent, the app automatically uses `data/rcs.db` for local development.
 
 Recommended production stack:
 - Flask API
@@ -91,9 +91,9 @@ Recommended production stack:
 - A real email/password reset flow
 - Backups
 
-### Important SQLite note
+### Database behavior
 
-SQLite is excellent for your first version and college demo. For multiple editors and production use, migrate to PostgreSQL.
+Local development uses SQLite with automatic schema creation and demo seed data. Render uses PostgreSQL with the same schema and seed behavior. Do not commit `data/rcs.db`; production uploads still use the local filesystem, so use image URLs or add object storage before scaling across multiple instances.
 
 ## 5. Custom domain
 
@@ -138,7 +138,7 @@ Browser / Phone
                  Flask API
                      │
                      ▼
-                  SQLite
+                  PostgreSQL
                      │
         ┌────────────┴────────────┐
         ▼                         ▼

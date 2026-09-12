@@ -2,12 +2,13 @@ import json
 import os, sqlite3
 from functools import wraps
 from pathlib import Path
-from flask import Flask, jsonify, request, session, render_template, send_from_directory
+from flask import Flask, jsonify, request, session, render_template, send_from_directory, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 
 BASE = Path(__file__).resolve().parent
 DB = BASE / "data" / "rcs.db"
+DATABASE_URL = os.getenv("DATABASE_URL")
 UPLOADS = BASE / "static" / "uploads"
 UPLOADS.mkdir(parents=True, exist_ok=True)
 
@@ -16,48 +17,102 @@ app.secret_key = os.getenv("SECRET_KEY", "rcs-dev-secret-change-me")
 app.config["MAX_CONTENT_LENGTH"] = 8 * 1024 * 1024
 ALLOWED = {"png","jpg","jpeg","webp","gif"}
 
+class CompatRow(dict):
+    def __getitem__(self, key):
+        if isinstance(key, int):
+            return tuple(self.values())[key]
+        return super().__getitem__(key)
+
+class PostgresConnection:
+    def __init__(self, url):
+        import psycopg
+        self.con = psycopg.connect(url)
+
+    def execute(self, query, params=()):
+        cursor = self.con.cursor()
+        cursor.execute(query.replace("?", "%s"), params)
+        return PostgresCursor(cursor)
+
+    def executemany(self, query, params):
+        self.con.cursor().executemany(query.replace("?", "%s"), params)
+
+    def commit(self):
+        self.con.commit()
+
+    def close(self):
+        self.con.close()
+
+class PostgresCursor:
+    def __init__(self, cursor):
+        self.cursor = cursor
+
+    def _row(self, row):
+        if row is None:
+            return None
+        return CompatRow({column.name: value for column, value in zip(self.cursor.description, row)})
+
+    def fetchone(self):
+        return self._row(self.cursor.fetchone())
+
+    def fetchall(self):
+        return [self._row(row) for row in self.cursor.fetchall()]
+
+    @property
+    def lastrowid(self):
+        row = self.fetchone()
+        return row[0] if row else None
+
 def db():
+    if DATABASE_URL:
+        return PostgresConnection(DATABASE_URL)
     con = sqlite3.connect(DB)
     con.row_factory = sqlite3.Row
     return con
 
 def init_db():
     con = db()
-    con.executescript("""
+    id_type = "SERIAL" if DATABASE_URL else "INTEGER"
+    schema = """
     CREATE TABLE IF NOT EXISTS users(
-      id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL,
+            id {id_type} PRIMARY KEY, name TEXT NOT NULL,
       email TEXT UNIQUE NOT NULL, password TEXT NOT NULL,
       role TEXT NOT NULL CHECK(role IN ('faculty','member')), active INTEGER DEFAULT 1
     );
     CREATE TABLE IF NOT EXISTS members(
-      id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, role TEXT,
+            id {id_type} PRIMARY KEY, name TEXT NOT NULL, role TEXT,
       department TEXT, year TEXT, bio TEXT, image_url TEXT, skills TEXT, featured INTEGER DEFAULT 0
     );
     CREATE TABLE IF NOT EXISTS projects(
-      id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, category TEXT,
+            id {id_type} PRIMARY KEY, title TEXT NOT NULL, category TEXT,
       description TEXT, tech TEXT, status TEXT, image_url TEXT, demo_url TEXT
     );
     CREATE TABLE IF NOT EXISTS events(
-      id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, date TEXT,
+            id {id_type} PRIMARY KEY, title TEXT NOT NULL, date TEXT,
       time TEXT, venue TEXT, description TEXT, image_url TEXT, registration_url TEXT
     );
     CREATE TABLE IF NOT EXISTS quizzes(
-      id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, topic TEXT,
+            id {id_type} PRIMARY KEY, title TEXT NOT NULL, topic TEXT,
       difficulty TEXT, description TEXT, questions_json TEXT NOT NULL
     );
     CREATE TABLE IF NOT EXISTS games(
-      id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, topic TEXT,
+            id {id_type} PRIMARY KEY, title TEXT NOT NULL, topic TEXT,
       description TEXT, game_type TEXT, difficulty TEXT
     );
     CREATE TABLE IF NOT EXISTS learning(
-      id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, level TEXT,
+            id {id_type} PRIMARY KEY, title TEXT NOT NULL, level TEXT,
       category TEXT, description TEXT, content TEXT, order_no INTEGER DEFAULT 0
     );
     CREATE TABLE IF NOT EXISTS feedback(
-      id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT, type TEXT,
+            id {id_type} PRIMARY KEY, name TEXT, email TEXT, type TEXT,
       title TEXT, message TEXT NOT NULL, created_at TEXT DEFAULT CURRENT_TIMESTAMP, status TEXT DEFAULT 'new'
     );
-    """)
+    """.format(id_type=id_type)
+    if DATABASE_URL:
+        for statement in schema.split(";"):
+            if statement.strip():
+                con.execute(statement)
+    else:
+        con.executescript(schema)
     # Demo accounts — change these before deployment.
     if con.execute("SELECT COUNT(*) FROM users").fetchone()[0] == 0:
         con.execute("INSERT INTO users(name,email,password,role) VALUES(?,?,?,?)",
@@ -145,6 +200,10 @@ def rows(table):
 def home(): return render_template("index.html")
 @app.route("/app")
 def admin_app(): return render_template("admin.html")
+@app.route("/login")
+def login_page(): return render_template("admin.html")
+@app.route("/feedback")
+def feedback_page(): return redirect("/#ideas")
 @app.route("/manifest.json")
 def manifest(): return send_from_directory(BASE/"static","manifest.json")
 
@@ -208,7 +267,10 @@ def admin_create(table):
     vals=[b.get(f,"") for f in fields]
     if table=="quizzes" and not b.get("questions_json"): vals[4]="[]"
     con=db()
-    cur=con.execute(f"INSERT INTO {table} ({','.join(fields)}) VALUES ({','.join(['?']*len(fields))})",vals)
+    insert_sql=f"INSERT INTO {table} ({','.join(fields)}) VALUES ({','.join(['?']*len(fields))})"
+    if DATABASE_URL:
+        insert_sql += " RETURNING id"
+    cur=con.execute(insert_sql,vals)
     con.commit(); item=dict(con.execute(f"SELECT * FROM {table} WHERE id=?",(cur.lastrowid,)).fetchone()); con.close()
     return jsonify(item),201
 
@@ -260,6 +322,7 @@ def upload():
 @app.get("/health")
 def health(): return jsonify({"status":"ok","service":"RCS Robotics Club"})
 
+init_db()
+
 if __name__=="__main__":
-    init_db()
     app.run(host="0.0.0.0", port=int(os.getenv("PORT","5000")), debug=True)
