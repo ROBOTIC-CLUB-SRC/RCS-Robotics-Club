@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <meta name="theme-color" content="#070712">
+
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/static/assets/rcs-logo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/style.css">
+
+  <title>Play | RCS Robotics Club @ SRC SASTRA</title>
+</head>
+
+<body>
+
+  <div class="grid-bg"></div>
+
+  <header class="nav">
+
+    <a class="brand" href="/">
+      <img src="/static/assets/rcs-logo.png" alt="RCS logo">
+
+      <span>
+        RCS-Robotics Club @SRC SASTRA<span class="blue">.</span>
+      </span>
+    </a>
+
+    <button class="nav-toggle" onclick="toggleNav()">☰</button>
+
+    <nav id="navLinks">
+
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/members">Members</a>
+      <a href="/projects">Projects</a>
+      <a href="/events">Events</a>
+      <a href="/learn">Learn</a>
+      <a href="/play">Play</a>
+      <a href="/ideas">Ideas</a>
+
+    </nav>
+
+  </header>
+
+
+  <main>
+
+    <!-- ABOUT SECTION WILL GO HERE -->
+     <section id="play" class="section play-section">
+      <div class="section-head">
+        <p class="eyebrow">06 / RCS ARCADE</p>
+        <h2>Learn by <span>playing.</span></h2>
+        <p>Mini games designed around actual robotics ideas.</p>
+      </div>
+      <div class="play-grid">
+        <article class="game glass"><span class="game-tag">SENSORS</span>
+          <h3>Sensor Sprint</h3>
+          <p>Calibrate your virtual distance sensor and keep the robot in the safe zone.</p><button class="btn primary"
+            onclick="startSensorGame()">Play now</button>
+          <div id="sensorGame" class="gamebox hidden"></div>
+        </article>
+        <article class="game glass"><span class="game-tag">CONTROL</span>
+          <h3>PID Pilot</h3>
+          <p>Move a bot toward the target by tuning proportional control.</p><button class="btn primary"
+            onclick="startPIDGame()">Play now</button>
+          <div id="pidGame" class="gamebox hidden"></div>
+        </article>
+        <article class="game glass"><span class="game-tag">PATH PLANNING</span>
+          <h3>Warehouse Navigator</h3>
+          <p>Choose the shortest safe route through a robot warehouse grid.</p><button class="btn primary"
+            onclick="startPathGame()">Play now</button>
+          <div id="pathGame" class="gamebox hidden"></div>
+        </article>
+      </div>
+      <div id="quizArea" class="quiz-wrap glass">
+        <div><span class="game-tag">QUIZ ARENA</span>
+          <h3>Challenge your robot brain 🧠</h3>
+          <p>Pick a quiz, answer questions, get an instant explanation.</p>
+        </div>
+        <div id="quizList" class="quiz-list"></div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <footer>
+
+    <div class="brand">
+
+      <img src="/static/assets/rcs-logo.png" alt="">
+
+      <span>
+        RCS<span class="blue">.ROBOTICS</span>
+      </span>
+
+    </div>
+
+    <p>
+      Robotics Club @ SRC SASTRA • Build. Learn. Compete.
+    </p>
+
+   
+  </footer>
+
+  <script src="/static/app.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <meta name="theme-color" content="#070712">
+
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/static/assets/rcs-logo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/style.css">
+
+  <title>Members | RCS Robotics Club @ SRC SASTRA</title>
+</head>
+
+<body>
+
+  <div class="grid-bg"></div>
+
+  <header class="nav">
+
+    <a class="brand" href="/">
+      <img src="/static/assets/rcs-logo.png" alt="RCS logo">
+
+      <span>
+        RCS-Robotics Club @SRC SASTRA<span class="blue">.</span>
+      </span>
+    </a>
+
+    <button class="nav-toggle" onclick="toggleNav()">☰</button>
+
+    <nav id="navLinks">
+
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/members">Members</a>
+      <a href="/projects">Projects</a>
+      <a href="/events">Events</a>
+      <a href="/learn">Learn</a>
+      <a href="/play">Play</a>
+      <a href="/ideas">Ideas</a>
+
+    </nav>
+
+  </header>
+
+
+  <main>
+
+    <!-- ABOUT SECTION WILL GO HERE -->
+    <section id="members" class="section">
+      <div class="section-head">
+        <p class="eyebrow">02 / THE PEOPLE</p>
+        <h2>Meet the <span>Builders.</span></h2>
+      </div>
+      <div id="membersGrid" class="card-grid"></div>
+    </section>
+
+    <section id="projects" class="section">
+      <div class="section-head">
+        <p class="eyebrow">03 / PROJECT LAB</p>
+        <h2>Ideas that <span>move.</span></h2>
+      </div>
+      <div id="projectsGrid" class="project-grid"></div>
+    </section>
+
+  </main>
+
+
+  <footer>
+
+    <div class="brand">
+
+      <img src="/static/assets/rcs-logo.png" alt="">
+
+      <span>
+        RCS<span class="blue">.ROBOTICS</span>
+      </span>
+
+    </div>
+
+    <p>
+      Robotics Club @ SRC SASTRA • Build. Learn. Compete.
+    </p>
+
+    
+
+  </footer>
+
+  <script src="/static/app.js"></script>
+
+</body>
+
+</html>

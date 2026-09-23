@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-color" content="#070712">
     <link rel="manifest" href="/manifest.json">
-    <link rel="icon" href="/static/assets/channels4_profile.png">
+    <link rel="icon" href="/static/assets/rcs-logo.png">
     <link
         href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
         rel="stylesheet">
@@ -16,14 +16,20 @@
 
 <body class="app-body">
     <div class="app-shell">
-        <aside class="sidebar"><a class="brand" href="/"><img src="/static/assets/channels4_profile.png"><span>RCS<span
+        <aside class="sidebar"><a class="brand" href="/"><img src="/static/assets/rcs-logo.png"><span>RCS<span
                         class="blue">.APP</span></span></a>
             <div id="userBadge" class="user-badge"></div><button class="btn ghost" style="width:100%;margin-top:10px"
+<<<<<<< HEAD
                 <div class="side-links"><button onclick="showPanel('overview')">⌂ Overview</button><button
+=======
+            
+            <div class="side-links"><button onclick="showPanel('overview')">⌂ Overview</button><button
+>>>>>>> 0ca6b470ce004f86c8244f40e99fafd39744fcbc
                     onclick="showPanel('members')">◉ Members</button><button onclick="showPanel('projects')">◈
                     Projects</button><button onclick="showPanel('events')">◷ Events</button><button
                     onclick="showPanel('learning')">✦ Learning</button><button onclick="showPanel('quizzes')">?
                     Quizzes</button><button onclick="showPanel('games')">⚡ Games</button><button
+<<<<<<< HEAD
                     onclick="showPanel('feedback')">✉ Ideas & Requests</button>
     </div>
     <div class="side-bottom"><a href="/">← Public website</a><button onclick="logout()">Log out</button></div>
@@ -49,6 +55,17 @@
         <section id="dashboardPanel" class="hidden">
             <div class="dash-head">
                 <div>
+=======
+                    onclick="showPanel('feedback')">✉ Ideas & Requests</button></div>
+            <div class="side-bottom"><a href="/">← Public website</a><button onclick="logout()">Log out</button></div>
+        </aside>
+        <main class="dashboard">
+            <div class="mobile-top"><a href="/" class="brand"><img
+                        src="/static/assets/rcs-logo.png"><span>RCS<span class="blue">.APP</span></span></a>
+            </div>
+            <section id="loginPanel" class="login-screen">
+                <div class="login-card glass"><img src="/static/assets/rcs-logo.png" class="login-logo">
+>>>>>>> 0ca6b470ce004f86c8244f40e99fafd39744fcbc
                     <p class="eyebrow">RCS CONTROL ROOM</p>
                     <h1>Welcome back, <span id="dashName">Builder</span>.</h1>
                 </div>
