@@ -269,6 +269,10 @@ if __name__=="__main__":
 # FRONTEND ROUTES — UNIQUE ENDPOINT NAMES ONLY
 # ============================================================
 
+# ============================================================
+# FRONTEND ROUTES
+# ============================================================
+
 @app.route("/")
 @app.route("/index")
 @app.route("/index.html")
@@ -319,292 +323,53 @@ def play_page():
 def projects_page():
     return render_template("projects.html")
 
+
+# ============================================================
+# ADMIN PAGE
+# ============================================================
+
 @app.route("/admin")
 @app.route("/admin.html")
 @app.route("/app")
 def admin_page():
     return render_template("admin.html")
 
-@app.route("/manifest.json")
-def manifest():
-    return send_from_directory(BASE / "static", "manifest.json")
+
+# ============================================================
+# MANIFEST
+# ============================================================
+
 
 
 # ============================================================
-# PUBLIC API
+# API HEALTH
 # ============================================================
-
-PUBLIC_TABLES = ("members", "projects", "events", "quizzes", "games", "learning")
 
 @app.get("/api/health")
-def health():
+def api_health():
     return jsonify({
         "success": True,
         "status": "ok",
         "service": "RCS Robotics Club",
-        "database_exists": DB.exists(),
+        "database_exists": DB.exists()
     })
+
 
 @app.get("/health")
 def health_alias():
-    return health()
-
-@app.get("/api/public/all")
-def public_all():
-    return jsonify({table: rows(table) for table in PUBLIC_TABLES})
-
-
-# ============================================================
-# AUTH API
-# ============================================================
-
-@app.post("/api/auth/login")
-def auth_login():
-    data = json_body()
-    email = text_value(data, "email").lower()
-    password = str(data.get("password", ""))
-
-    if not email or not password:
-        return jsonify({"success": False, "error": "Email and password are required."}), 400
-
-    con = db()
-    user = con.execute(
-        "SELECT id,name,email,password,role FROM users WHERE lower(email)=lower(?) AND active=1",
-        (email,),
-    ).fetchone()
-    con.close()
-
-    if not user or not check_password_hash(user["password"], password):
-        return jsonify({"success": False, "error": "Invalid email or password."}), 401
-
-    session.clear()
-    session["user_id"] = user["id"]
-    session["name"] = user["name"]
-    session["email"] = user["email"]
-    session["role"] = user["role"]
-
     return jsonify({
-        "success": True,
-        "message": "Login successful.",
-        "user": {
-            "id": user["id"],
-            "name": user["name"],
-            "email": user["email"],
-            "role": user["role"],
-        },
-    })
-
-@app.post("/api/login")
-def login_alias():
-    return auth_login()
-
-@app.route("/api/auth/logout", methods=["GET", "POST"])
-def auth_logout():
-    session.clear()
-    if request.method == "GET":
-        return redirect("/admin")
-    return jsonify({"success": True, "message": "Logged out successfully."})
-
-@app.get("/api/auth/me")
-def auth_me():
-    if not session.get("user_id"):
-        return jsonify({"authenticated": False, "success": False})
-    return jsonify({
-        "authenticated": True,
-        "success": True,
-        "user": {
-            "id": session["user_id"],
-            "name": session.get("name"),
-            "email": session.get("email"),
-            "role": session.get("role"),
-        },
+        "status": "ok",
+        "service": "RCS Robotics Club"
     })
 
 
 # ============================================================
-# ADMIN STATS
-# ============================================================
-
-@app.get("/api/admin/stats")
-@auth_required
-def admin_stats():
-    con = db()
-    stats = {}
-    for table in PUBLIC_TABLES:
-        stats[table] = con.execute(f"SELECT COUNT(*) AS count FROM {table}").fetchone()["count"]
-    stats["feedback"] = con.execute("SELECT COUNT(*) AS count FROM feedback").fetchone()["count"]
-    con.close()
-    return jsonify({"success": True, "stats": stats})
-
-
-# ============================================================
-# FEEDBACK / IDEAS
-# ============================================================
-
-@app.post("/api/feedback")
-def add_feedback():
-    data = json_body()
-    message = text_value(data, "message")
-    if not message:
-        return jsonify({"success": False, "error": "Message is required."}), 400
-
-    con = db()
-    cur = con.execute(
-        "INSERT INTO feedback(name,email,type,title,message,status) VALUES(?,?,?,?,?,?)",
-        (
-            text_value(data, "name"),
-            text_value(data, "email"),
-            text_value(data, "type", "idea"),
-            text_value(data, "title"),
-            message,
-            "new",
-        ),
-    )
-    con.commit()
-    con.close()
-    return jsonify({"success": True, "id": cur.lastrowid, "message": "Feedback submitted successfully."}), 201
-
-
-# ============================================================
-# GENERIC ADMIN CRUD
-# ============================================================
-
-RESOURCE_FIELDS = {
-    "members": ["name", "role", "department", "year", "bio", "image_url", "skills", "featured"],
-    "projects": ["title", "category", "description", "tech", "status", "image_url", "demo_url"],
-    "events": ["title", "date", "time", "venue", "description", "image_url", "registration_url"],
-    "quizzes": ["title", "topic", "difficulty", "description", "questions_json"],
-    "games": ["title", "topic", "description", "game_type", "difficulty"],
-    "learning": ["title", "level", "category", "description", "content", "order_no"],
-}
-
-@app.get("/api/admin/<table>")
-@auth_required
-def admin_list(table):
-    if table not in RESOURCE_FIELDS:
-        return jsonify({"success": False, "error": "Unknown resource."}), 404
-    return jsonify({"success": True, "items": rows(table)})
-
-@app.post("/api/admin/<table>")
-@auth_required
-def admin_create(table):
-    if table not in RESOURCE_FIELDS:
-        return jsonify({"success": False, "error": "Unknown resource."}), 404
-
-    data = json_body()
-    fields = RESOURCE_FIELDS[table]
-    values = [data.get(field, "") for field in fields]
-    if table == "quizzes" and not values[4]:
-        values[4] = "[]"
-
-    con = db()
-    placeholders = ",".join("?" for _ in fields)
-    cur = con.execute(
-        f"INSERT INTO {table} ({','.join(fields)}) VALUES ({placeholders})",
-        values,
-    )
-    con.commit()
-    item = con.execute(f"SELECT * FROM {table} WHERE id=?", (cur.lastrowid,)).fetchone()
-    con.close()
-    return jsonify({"success": True, "item": dict(item)}), 201
-
-@app.put("/api/admin/<table>/<int:item_id>")
-@auth_required
-def admin_update(table, item_id):
-    if table not in RESOURCE_FIELDS:
-        return jsonify({"success": False, "error": "Unknown resource."}), 404
-
-    data = json_body()
-    fields = RESOURCE_FIELDS[table]
-    sets = ", ".join(f"{field}=?" for field in fields)
-    values = [data.get(field, "") for field in fields] + [item_id]
-
-    con = db()
-    cur = con.execute(f"UPDATE {table} SET {sets} WHERE id=?", values)
-    con.commit()
-    item = con.execute(f"SELECT * FROM {table} WHERE id=?", (item_id,)).fetchone()
-    con.close()
-
-    if cur.rowcount == 0 or item is None:
-        return jsonify({"success": False, "error": "Item not found."}), 404
-    return jsonify({"success": True, "item": dict(item)})
-
-@app.delete("/api/admin/<table>/<int:item_id>")
-@auth_required
-def admin_delete(table, item_id):
-    if table not in RESOURCE_FIELDS:
-        return jsonify({"success": False, "error": "Unknown resource."}), 404
-
-    con = db()
-    cur = con.execute(f"DELETE FROM {table} WHERE id=?", (item_id,))
-    con.commit()
-    con.close()
-
-    if cur.rowcount == 0:
-        return jsonify({"success": False, "error": "Item not found."}), 404
-    return jsonify({"success": True, "message": "Deleted successfully."})
-
-
-# ============================================================
-# FEEDBACK ADMIN
-# ============================================================
-
-@app.get("/api/admin/feedback")
-@auth_required
-def admin_feedback():
-    return jsonify({"success": True, "items": rows("feedback")})
-
-@app.put("/api/admin/feedback/<int:item_id>")
-@auth_required
-def update_feedback(item_id):
-    status = text_value(json_body(), "status", "reviewed")
-    con = db()
-    cur = con.execute("UPDATE feedback SET status=? WHERE id=?", (status, item_id))
-    con.commit()
-    con.close()
-    if cur.rowcount == 0:
-        return jsonify({"success": False, "error": "Feedback not found."}), 404
-    return jsonify({"success": True, "message": "Feedback updated."})
-
-
-# ============================================================
-# UPLOAD API
-# ============================================================
-
-@app.post("/api/admin/upload")
-@auth_required
-def admin_upload():
-    file = request.files.get("file")
-    if not file:
-        return jsonify({"success": False, "error": "No file uploaded."}), 400
-    try:
-        url = save_upload(file)
-    except ValueError as exc:
-        return jsonify({"success": False, "error": str(exc)}), 400
-    return jsonify({"success": True, "url": url})
-
-
-# ============================================================
-# ERROR HANDLERS
-# ============================================================
-
-@app.errorhandler(413)
-def too_large(error):
-    return jsonify({"success": False, "error": "File is too large. Maximum size is 8 MB."}), 413
-
-@app.errorhandler(404)
-def not_found(error):
-    if request.path.startswith("/api/"):
-        return jsonify({"success": False, "error": "API endpoint not found."}), 404
-    return "Page not found.", 404
-
-
-# ============================================================
-# START
+# START APPLICATION
 # ============================================================
 
 if __name__ == "__main__":
     init_db()
+
     print("=" * 60)
     print("RCS ROBOTICS CLUB")
     print("=" * 60)
@@ -612,7 +377,10 @@ if __name__ == "__main__":
     print("Website  : http://127.0.0.1:5000/")
     print("Admin    : http://127.0.0.1:5000/admin")
     print("Health   : http://127.0.0.1:5000/api/health")
-    print("Faculty  : faculty@rcs-sastra.org / RCS@2026")
-    print("Member   : member@rcs-sastra.org / RCS@2026")
     print("=" * 60)
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "5000")), debug=True)
+
+    app.run(
+        host="0.0.0.0",
+        port=int(os.getenv("PORT", "5000")),
+        debug=True
+    )
