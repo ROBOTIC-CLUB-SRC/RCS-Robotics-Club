@@ -263,35 +263,34 @@ def health(): return jsonify({"status":"ok","service":"RCS Robotics Club"})
 if __name__=="__main__":
     init_db()
     app.run(host="0.0.0.0", port=int(os.getenv("PORT","5000")), debug=True)
-
-@app.route("/")
-def home():
+    @app.route("/")
+def index_page():
     return render_template("index.html")
 
 @app.route("/about")
-def about():
+def about_page():
     return render_template("about.html")
 
 @app.route("/members")
-def members():
+def members_page():
     return render_template("members.html")
 
 @app.route("/projects")
-def projects():
+def projects_page():
     return render_template("projects.html")
 
 @app.route("/events")
-def events():
+def events_page():
     return render_template("events.html")
 
 @app.route("/learn")
-def learn():
+def learn_page():
     return render_template("learn.html")
 
 @app.route("/play")
-def play():
+def play_page():
     return render_template("play.html")
 
 @app.route("/ideas")
-def ideas():
+def ideas_page():
     return render_template("ideas.html")
