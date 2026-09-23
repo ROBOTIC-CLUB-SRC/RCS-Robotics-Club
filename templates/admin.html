@@ -19,59 +19,59 @@
         <aside class="sidebar"><a class="brand" href="/"><img src="/static/assets/channels4_profile.png"><span>RCS<span
                         class="blue">.APP</span></span></a>
             <div id="userBadge" class="user-badge"></div><button class="btn ghost" style="width:100%;margin-top:10px"
-                onclick="logout()">↪ Logout</button>
-            <div class="side-links"><button onclick="showPanel('overview')">⌂ Overview</button><button
+                <div class="side-links"><button onclick="showPanel('overview')">⌂ Overview</button><button
                     onclick="showPanel('members')">◉ Members</button><button onclick="showPanel('projects')">◈
                     Projects</button><button onclick="showPanel('events')">◷ Events</button><button
                     onclick="showPanel('learning')">✦ Learning</button><button onclick="showPanel('quizzes')">?
                     Quizzes</button><button onclick="showPanel('games')">⚡ Games</button><button
-                    onclick="showPanel('feedback')">✉ Ideas & Requests</button></div>
-            <div class="side-bottom"><a href="/">← Public website</a><button onclick="logout()">Log out</button></div>
-        </aside>
-        <main class="dashboard">
-            <div class="mobile-top"><a href="/" class="brand"><img
-                        src="/static/assets/channels4_profile.png"><span>RCS<span class="blue">.APP</span></span></a>
+                    onclick="showPanel('feedback')">✉ Ideas & Requests</button>
+    </div>
+    <div class="side-bottom"><a href="/">← Public website</a><button onclick="logout()">Log out</button></div>
+    </aside>
+    <main class="dashboard">
+        <div class="mobile-top"><a href="/" class="brand"><img src="/static/assets/channels4_profile.png"><span>RCS<span
+                        class="blue">.APP</span></span></a>
+        </div>
+        <section id="loginPanel" class="login-screen">
+            <div class="login-card glass"><img src="/static/assets/channels4_profile.png" class="login-logo">
+                <p class="eyebrow">RCS CONTROL ROOM</p>
+                <h1>Common <span>Login.</span></h1>
+                <p>Faculty and members use the same portal. Permissions are role-based.</p>
+                <form id="loginForm"><input name="email" type="email" placeholder="Email" required><input
+                        name="password" type="password" placeholder="Password" required><button class="btn primary"
+                        type="submit">Enter RCS App →</button>
+                    <div id="loginMsg" class="form-msg"></div>
+                </form>
+                <div class("demo-login"><b>Demo accounts</b><br>Faculty: faculty@rcs-sastra.org<br>Member:
+                    member@rcs-sastra.org<br>Password: RCS@2026</div>
             </div>
-            <section id="loginPanel" class="login-screen">
-                <div class="login-card glass"><img src="/static/assets/channels4_profile.png" class="login-logo">
+        </section>
+        <section id="dashboardPanel" class="hidden">
+            <div class="dash-head">
+                <div>
                     <p class="eyebrow">RCS CONTROL ROOM</p>
-                    <h1>Common <span>Login.</span></h1>
-                    <p>Faculty and members use the same portal. Permissions are role-based.</p>
-                    <form id="loginForm"><input name="email" type="email" placeholder="Email" required><input
-                            name="password" type="password" placeholder="Password" required><button class="btn primary"
-                            type="submit">Enter RCS App →</button>
-                        <div id="loginMsg" class="form-msg"></div>
-                    </form>
-                    <div class("demo-login"><b>Demo accounts</b><br>Faculty: faculty@rcs-sastra.org<br>Member:
-                        member@rcs-sastra.org<br>Password: RCS@2026</div>
+                    <h1>Welcome back, <span id="dashName">Builder</span>.</h1>
                 </div>
-            </section>
-            <section id="dashboardPanel" class="hidden">
-                <div class="dash-head">
-                    <div>
-                        <p class="eyebrow">RCS CONTROL ROOM</p>
-                        <h1>Welcome back, <span id="dashName">Builder</span>.</h1>
-                    </div>
-                    <div class="role-chip" id="roleChip"></div>
+                <div class="role-chip" id="roleChip"></div>
+            </div>
+            <div id="overview" class="panel">
+                <div class="metric-grid" id="metrics"></div>
+                <div class="quick glass">
+                    <h2>Live website sync</h2>
+                    <p>Everything you edit here is saved to the same database the public website reads. Publish a
+                        member, project or event and refresh the public page to see it.</p><button class="btn ghost"
+                        onclick="window.open('/','_blank')">Open public website ↗</button>
                 </div>
-                <div id="overview" class="panel">
-                    <div class="metric-grid" id="metrics"></div>
-                    <div class="quick glass">
-                        <h2>Live website sync</h2>
-                        <p>Everything you edit here is saved to the same database the public website reads. Publish a
-                            member, project or event and refresh the public page to see it.</p><button class="btn ghost"
-                            onclick="window.open('/','_blank')">Open public website ↗</button>
-                    </div>
-                </div>
-                <div id="members" class="panel hidden"></div>
-                <div id="projects" class="panel hidden"></div>
-                <div id="events" class="panel hidden"></div>
-                <div id="learning" class="panel hidden"></div>
-                <div id="quizzes" class="panel hidden"></div>
-                <div id="games" class="panel hidden"></div>
-                <div id="feedback" class="panel hidden"></div>
-            </section>
-        </main>
+            </div>
+            <div id="members" class="panel hidden"></div>
+            <div id="projects" class="panel hidden"></div>
+            <div id="events" class="panel hidden"></div>
+            <div id="learning" class="panel hidden"></div>
+            <div id="quizzes" class="panel hidden"></div>
+            <div id="games" class="panel hidden"></div>
+            <div id="feedback" class="panel hidden"></div>
+        </section>
+    </main>
     </div>
     <script src="/static/admin.js"></script>
 </body>
