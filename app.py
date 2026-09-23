@@ -145,8 +145,7 @@ def rows(table):
 def home(): return render_template("index.html")
 @app.route("/app")
 def admin_app(): return render_template("admin.html")
-@app.route("/manifest.json")
-def manifest(): return send_from_directory(BASE/"static","manifest.json")
+
 
 @app.get("/api/public/all")
 def public_all():
