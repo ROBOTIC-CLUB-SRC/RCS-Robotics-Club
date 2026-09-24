@@ -81,9 +81,8 @@ def admin_required():
 
     return None
     auth = admin_required()
-
-if auth:
-    return auth
+    if auth:
+        return auth
 
 
 @app.route("/app")
