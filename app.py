@@ -73,16 +73,13 @@ def admin_logout():
     })
 
 def admin_required():
-
     if not session.get("admin_logged_in"):
         return jsonify({
             "error": "Unauthorized"
         }), 401
 
     return None
-    auth = admin_required()
-    if auth:
-        return auth
+    
 
 
 @app.route("/app")
