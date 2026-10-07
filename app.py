@@ -340,7 +340,29 @@ def upload():
 @app.get("/health")
 def health(): return jsonify({"status":"ok","service":"RCS Robotics Club"})
 
+@app.route("/about")
+def about(): return redirect("/#about")
+
+@app.route("/members")
+def members(): return redirect("/#members")
+
+@app.route("/projects")
+def projects(): return redirect("/#projects")
+
+@app.route("/events")
+def events(): return redirect("/#events")
+
+@app.route("/learn")
+def learn(): return redirect("/#resources")
+
+@app.route("/play")
+def play(): return redirect("/#play")
+
+@app.route("/ideas")
+def ideas(): return redirect("/#feedback")
+
 init_db()
 
 if __name__=="__main__":
     app.run(host="0.0.0.0", port=int(os.getenv("PORT","5000")), debug=True)
+
