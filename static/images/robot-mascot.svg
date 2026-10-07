@@ -1,0 +1,227 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%" fill="none" class="rcs-mascot-svg" role="img" aria-label="RCS Robotics Club Mascot">
+  <defs>
+    <!-- Background Glow Filters -->
+    <filter id="blue-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="eye-glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="6" result="blur1" />
+      <feGaussianBlur stdDeviation="16" result="blur2" />
+      <feMerge>
+        <feMergeNode in="blur2" />
+        <feMergeNode in="blur1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="soft-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#000000" flood-opacity="0.65" />
+    </filter>
+
+    <!-- Gradients -->
+    <radialGradient id="backdrop-radial" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2F6BFF" stop-opacity="0.32" />
+      <stop offset="45%" stop-color="#E5202E" stop-opacity="0.18" />
+      <stop offset="75%" stop-color="#0A0A0F" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#0A0A0F" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="concentric-ring-1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#5B8CFF" stop-opacity="0" />
+      <stop offset="90%" stop-color="#5B8CFF" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#5B8CFF" stop-opacity="0" />
+    </radialGradient>
+
+    <linearGradient id="armor-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#222332" />
+      <stop offset="50%" stop-color="#14141C" />
+      <stop offset="100%" stop-color="#0A0A0F" />
+    </linearGradient>
+
+    <linearGradient id="armor-light" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="70%" stop-color="#E1E4EC" />
+      <stop offset="100%" stop-color="#B0B5C6" />
+    </linearGradient>
+
+    <linearGradient id="brand-red" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF3B47" />
+      <stop offset="100%" stop-color="#E5202E" />
+    </linearGradient>
+
+    <linearGradient id="brand-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5B8CFF" />
+      <stop offset="100%" stop-color="#2F6BFF" />
+    </linearGradient>
+
+    <linearGradient id="visor-glass" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0D111A" />
+      <stop offset="100%" stop-color="#05070A" />
+    </linearGradient>
+
+    <linearGradient id="hover-beam" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#5B8CFF" stop-opacity="0.8" />
+      <stop offset="60%" stop-color="#2F6BFF" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#2F6BFF" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <!-- BACKGROUND: Soft concentric circular glows -->
+  <g class="mascot-backdrop">
+    <circle cx="300" cy="300" r="260" fill="url(#backdrop-radial)" />
+    <circle cx="300" cy="300" r="230" stroke="#2F6BFF" stroke-width="1.5" stroke-dasharray="6 8" opacity="0.25" />
+    <circle cx="300" cy="300" r="175" stroke="#E5202E" stroke-width="1.5" stroke-opacity="0.2" />
+    <circle cx="300" cy="300" r="120" stroke="#5B8CFF" stroke-width="1" stroke-dasharray="4 6" opacity="0.3" />
+    <!-- Floating orbital tech dots -->
+    <circle cx="120" cy="240" r="4" fill="#5B8CFF" opacity="0.6" filter="url(#blue-glow)" />
+    <circle cx="480" cy="210" r="5" fill="#FF3B47" opacity="0.6" />
+    <circle cx="450" cy="410" r="3.5" fill="#5B8CFF" opacity="0.5" />
+    <circle cx="160" cy="420" r="3" fill="#FFFFFF" opacity="0.4" />
+  </g>
+
+  <!-- ROBOT MASCOT MAIN BODY WITH SOFT SHADOW -->
+  <g id="mascot-robot" filter="url(#soft-shadow)">
+    <!-- Propulsion / Hover Beam -->
+    <g class="hover-propulsion">
+      <ellipse cx="300" cy="490" rx="90" ry="20" fill="url(#hover-beam)" filter="url(#blue-glow)" />
+      <polygon points="260,420 340,420 370,480 230,480" fill="url(#hover-beam)" opacity="0.45" filter="url(#blue-glow)" />
+      <ellipse cx="300" cy="475" rx="45" ry="10" fill="#5B8CFF" opacity="0.75" filter="url(#blue-glow)" />
+      <circle cx="300" cy="475" r="5" fill="#FFFFFF" filter="url(#eye-glow)" />
+    </g>
+
+    <!-- Lower Thruster Base Chassis -->
+    <path d="M245 405 C245 405, 270 435, 300 435 C330 435, 355 405, 355 405 L340 380 L260 380 Z" fill="url(#armor-dark)" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
+    <path d="M280 415 L320 415" stroke="#FF3B47" stroke-width="3" stroke-linecap="round" />
+
+    <!-- ARMS -->
+    <!-- Left Arm (Viewer's Left) -->
+    <g class="mascot-arm-left">
+      <!-- Shoulder Joint -->
+      <circle cx="185" cy="295" r="24" fill="url(#armor-dark)" stroke="#2F6BFF" stroke-width="2" />
+      <circle cx="185" cy="295" r="14" fill="#0A0A0F" />
+      <circle cx="185" cy="295" r="6" fill="#FF3B47" />
+      <!-- Bicep / Forearm Plate -->
+      <path d="M175 315 L155 375 C153 382 158 390 166 391 L195 385 C202 383 206 376 204 369 L192 315 Z" fill="url(#armor-light)" stroke="rgba(0,0,0,0.2)" stroke-width="1" />
+      <!-- Left Hand Manipulator -->
+      <path d="M165 388 C160 398 165 410 176 412 C184 413 192 407 195 398 Z" fill="url(#armor-dark)" stroke="#5B8CFF" stroke-width="1.5" />
+      <!-- Blue Accent Strip -->
+      <line x1="172" y1="335" x2="164" y2="365" stroke="#2F6BFF" stroke-width="3" stroke-linecap="round" />
+    </g>
+
+    <!-- Right Arm (Viewer's Right) -->
+    <g class="mascot-arm-right">
+      <!-- Shoulder Joint -->
+      <circle cx="415" cy="295" r="24" fill="url(#armor-dark)" stroke="#2F6BFF" stroke-width="2" />
+      <circle cx="415" cy="295" r="14" fill="#0A0A0F" />
+      <circle cx="415" cy="295" r="6" fill="#FF3B47" />
+      <!-- Forearm Plate (Slightly raised greeting posture) -->
+      <path d="M425 315 L445 375 C447 382 442 390 434 391 L405 385 C398 383 394 376 396 369 L408 315 Z" fill="url(#armor-light)" stroke="rgba(0,0,0,0.2)" stroke-width="1" />
+      <!-- Right Hand Manipulator -->
+      <path d="M435 388 C440 398 435 410 424 412 C416 413 408 407 405 398 Z" fill="url(#armor-dark)" stroke="#5B8CFF" stroke-width="1.5" />
+      <!-- Red Accent Strip -->
+      <line x1="428" y1="335" x2="436" y2="365" stroke="#FF3B47" stroke-width="3" stroke-linecap="round" />
+    </g>
+
+    <!-- MAIN TORSO / CHEST -->
+    <g class="mascot-torso">
+      <!-- Dark under-chassis -->
+      <path d="M210 270 L390 270 L365 395 C365 402 359 408 351 408 L249 408 C241 408 235 402 235 395 Z" fill="url(#armor-dark)" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" />
+      
+      <!-- Upper White Ceramic Chest Plate (Aerodynamic split) -->
+      <path d="M225 275 L290 275 L285 345 L235 345 Z" fill="url(#armor-light)" />
+      <path d="M310 275 L375 275 L365 345 L315 345 Z" fill="url(#armor-light)" />
+
+      <!-- Center Chest Red Accent Wedge -->
+      <polygon points="292,275 308,275 305,320 295,320" fill="url(#brand-red)" />
+
+      <!-- Glowing Arc Reactor / RCS Power Core -->
+      <g class="mascot-core">
+        <circle cx="300" cy="355" r="28" fill="#0A0A0F" stroke="#222332" stroke-width="2" />
+        <circle cx="300" cy="355" r="23" stroke="#2F6BFF" stroke-width="2.5" stroke-dasharray="8 4" />
+        <circle cx="300" cy="355" r="16" fill="url(#brand-blue)" filter="url(#eye-glow)" />
+        <polygon points="300,344 310,361 290,361" fill="#FFFFFF" />
+      </g>
+
+      <!-- Tech Vent Grills on Flanks -->
+      <line x1="245" y1="365" x2="265" y2="365" stroke="#5B8CFF" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+      <line x1="247" y1="373" x2="267" y2="373" stroke="#5B8CFF" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+      <line x1="335" y1="365" x2="355" y2="365" stroke="#FF3B47" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+      <line x1="333" y1="373" x2="353" y2="373" stroke="#FF3B47" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+
+      <!-- RCS Branding Tag on Chest -->
+      <rect x="278" y="285" width="44" height="15" rx="7.5" fill="#0A0A0F" stroke="#FF3B47" stroke-width="1.5" />
+      <text x="300" y="296" text-anchor="middle" fill="#FFFFFF" font-family="'Chakra Petch', sans-serif" font-weight="700" font-style="italic" font-size="9" letter-spacing="1">RCS</text>
+    </g>
+
+    <!-- NECK COLLAR -->
+    <path d="M255 248 L345 248 L355 268 L245 268 Z" fill="#14141C" stroke="#2F6BFF" stroke-width="1.5" />
+    <circle cx="300" cy="258" r="4" fill="#5B8CFF" filter="url(#blue-glow)" />
+
+    <!-- HEAD & VISOR UNIT -->
+    <g class="mascot-head">
+      <!-- Antenna / Comms Array -->
+      <!-- Left Antenna with Blue Tip -->
+      <path d="M225 155 L210 115" stroke="url(#armor-light)" stroke-width="4" stroke-linecap="round" />
+      <circle cx="210" cy="115" r="6" fill="#2F6BFF" filter="url(#eye-glow)" />
+      <!-- Right High-Gain Antenna with Red Tip -->
+      <path d="M375 155 L390 105" stroke="url(#armor-light)" stroke-width="4" stroke-linecap="round" />
+      <circle cx="390" cy="105" r="7" fill="#FF3B47" filter="url(#eye-glow)" />
+      <line x1="384" y1="125" x2="396" y2="125" stroke="#FFFFFF" stroke-width="2" />
+
+      <!-- Head Outer Shell (Sleek Angular Helmet) -->
+      <path d="M210 185 C210 150, 245 135, 300 135 C355 135, 390 150, 390 185 L382 235 C382 248, 370 256, 355 256 L245 256 C230 256, 218 248, 218 235 Z" fill="url(#armor-dark)" stroke="rgba(255,255,255,0.2)" stroke-width="2" />
+
+      <!-- Top Ceramic Brow Plate -->
+      <path d="M228 175 C245 152, 272 144, 300 144 C328 144, 355 152, 372 175 L360 185 C345 170, 324 163, 300 163 C276 163, 255 170, 240 185 Z" fill="url(#armor-light)" />
+
+      <!-- Red Brand Crown Stripe -->
+      <polygon points="293,140 307,140 305,162 295,162" fill="url(#brand-red)" />
+
+      <!-- Ear Pod Fin / Headphone Units -->
+      <!-- Left Ear Pod -->
+      <path d="M195 185 C195 175 204 168 214 172 L216 230 C206 234 195 226 195 216 Z" fill="url(#armor-light)" stroke="#2F6BFF" stroke-width="1.5" />
+      <circle cx="204" cy="200" r="4" fill="#2F6BFF" />
+      <!-- Right Ear Pod -->
+      <path d="M405 185 C405 175 396 168 386 172 L384 230 C394 234 405 226 405 216 Z" fill="url(#armor-light)" stroke="#FF3B47" stroke-width="1.5" />
+      <circle cx="396" cy="200" r="4" fill="#FF3B47" />
+
+      <!-- Glossy Visor Screen Face -->
+      <rect x="226" y="180" width="148" height="62" rx="20" fill="url(#visor-glass)" stroke="#2F6BFF" stroke-width="1.5" />
+
+      <!-- Subtle Visor Glass Reflection Highlight -->
+      <path d="M236 186 C260 182, 340 182, 364 186 C345 194, 255 194, 236 186 Z" fill="#FFFFFF" opacity="0.12" />
+
+      <!-- GLOWING BLUE EYES (Futuristic visor HUD eyes) -->
+      <g class="mascot-eyes" filter="url(#eye-glow)">
+        <!-- Left Glowing Cyan-Blue Eye -->
+        <g class="left-eye">
+          <ellipse cx="265" cy="210" rx="20" ry="14" fill="#5B8CFF" />
+          <ellipse cx="265" cy="210" rx="14" ry="9" fill="#FFFFFF" />
+          <path d="M246 202 L284 202" stroke="#2F6BFF" stroke-width="1.5" stroke-linecap="round" />
+        </g>
+
+        <!-- Right Glowing Cyan-Blue Eye -->
+        <g class="right-eye">
+          <ellipse cx="335" cy="210" rx="20" ry="14" fill="#5B8CFF" />
+          <ellipse cx="335" cy="210" rx="14" ry="9" fill="#FFFFFF" />
+          <path d="M316 202 L354 202" stroke="#2F6BFF" stroke-width="1.5" stroke-linecap="round" />
+        </g>
+
+        <!-- Dynamic Tech HUD Eye Corner Brackets -->
+        <path d="M238 200 L234 200 L234 220 L238 220" stroke="#5B8CFF" stroke-width="1.5" fill="none" opacity="0.8" />
+        <path d="M362 200 L366 200 L366 220 L362 220" stroke="#5B8CFF" stroke-width="1.5" fill="none" opacity="0.8" />
+      </g>
+
+      <!-- Futuristic Robot Mouth Smile Line / Audio Waveform -->
+      <path d="M285 233 Q300 238 315 233" stroke="#5B8CFF" stroke-width="2.5" stroke-linecap="round" fill="none" filter="url(#blue-glow)" />
+
+      <!-- Cheek Decals -->
+      <circle cx="242" cy="226" r="2.5" fill="#FF3B47" opacity="0.8" />
+      <circle cx="358" cy="226" r="2.5" fill="#2F6BFF" opacity="0.8" />
+    </g>
+  </g>
+</svg>

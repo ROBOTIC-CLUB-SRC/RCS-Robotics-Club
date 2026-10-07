@@ -1,202 +1,522 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#070712">
-  <meta name="description" content="RCS Robotics Club @ SRC SASTRA — build, learn, compete.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0A0A0F">
+  <meta name="description" content="RCS Robotics Club — Build. Learn. Innovate. Student robotics at SRC SASTRA.">
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="/static/assets/rcs-logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,600;1,700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/style.css">
-  <title>RCS Robotics Club @ SRC SASTRA</title>
+  <title>RCS Robotics Club • Build. Learn. Innovate.</title>
 </head>
+<body class="outer-body">
 
-<body>
-  <div class="grid-bg"></div>
-  <header class="nav">
-    <a class="brand" href="#home"><img src="/static/assets/rcs-logo.png" alt="RCS logo"><span>RCS-Robotics Club
-        @SRC SASTRA<span class="blue">.</span></span></a>
-    <button class="nav-toggle" onclick="toggleNav()">☰</button>
-    <nav id="navLinks"><a href="#home">Home</a><a href="#about">About</a><a href="#members">Members</a><a
-        href="#projects">Projects</a><a href="#events">Events</a><a href="#learn">Learn</a><a href="#play">Play</a><a
-        href="#ideas">Ideas</a>
-  </header>
-
-  <main>
-    <section id="home" class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">SASTRA • ROBOTICS • EMBEDDED • AI</p>
-        <h1>BUILD THE <span>FUTURE.</span><br>ONE ROBOT AT A TIME.</h1>
-        <p class="hero-text">RCS Robotics Club @ SRC SASTRA is a student-run space to learn, build, compete and turn wild
-          ideas into working machines — from first GPIO blink to autonomous robots.</p>
-        <div class="cta-row"><a class="btn primary" href="#projects">Explore Builds</a><a class="btn ghost"
-            href="#learn">Start Learning ↓</a></div>
-        <div class="stats">
-          <div><b id="statProjects">—</b><small>Projects</small></div>
-          <div><b id="statMembers">—</b><small>Members</small></div>
-          <div><b id="statEvents">—</b><small>Events</small></div>
-          <div><b>09</b><small>Learning tracks</small></div>
-        </div>
-      </div>
-      <div class="robot-stage" id="robotStage">
-        <div class="hud hud-a">RCS / BOT-01<br><span>ONLINE</span></div>
-        <div class="hud hud-b">SENSOR<br><span id="sensorReadout">READY</span></div>
-        <div class="robot" id="flyingRobot" aria-label="Interactive flying robot">
-          <div class="antenna"></div>
-          <div class="ear left"></div>
-          <div class="ear right"></div>
-          <div class="bot-head">
-            <div class="eye"></div>
-            <div class="eye"></div>
-            <div class="mouth"></div>
+  <!-- Large rounded container representing page frame -->
+  <div class="page-container">
+    
+    <!-- NAVBAR -->
+    <header class="navbar" id="topNav">
+      <div class="nav-left">
+        <a class="brand-link" href="#home" aria-label="RCS Robotics Club Home">
+          <div class="brand-skew-badge">
+            <span class="badge-text">RCS</span>
           </div>
-          <div class="body-core">
-            <div class="core-ring"></div>
-            <div class="core-dot"></div>
+          <div class="brand-details">
+            <span class="brand-name">ROBOTICS CLUB</span>
+            <span class="brand-tagline">BUILD. LEARN. INNOVATE.</span>
           </div>
-          <div class="arm arm-l"></div>
-          <div class="arm arm-r"></div>
-          <div class="thruster t-l"></div>
-          <div class="thruster t-r"></div>
+        </a>
+      </div>
+
+      <nav class="nav-center" id="navMenu" aria-label="Main Navigation">
+        <a href="#home" class="nav-link active">Home</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#members" class="nav-link">Members</a>
+        <a href="#projects" class="nav-link">Projects</a>
+        <a href="#events" class="nav-link">Events</a>
+        <a href="#gallery" class="nav-link">Gallery</a>
+        <a href="#resources" class="nav-link">Resources</a>
+        <a href="#feedback" class="nav-link">Feedback</a>
+      </nav>
+
+      <div class="nav-right">
+        <a href="/feedback" class="btn btn-red btn-pill nav-cta">Join / Give Feedback</a>
+        <button class="nav-toggle" id="navToggleBtn" onclick="toggleNav()" aria-label="Toggle navigation menu">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+      </div>
+    </header>
+
+    <main id="mainContent">
+
+      <!-- HERO SECTION (Three-column desktop, stacked mobile) -->
+      <section id="home" class="hero-section">
+        <!-- Soft concentric circular glows -->
+        <div class="hero-backdrop-glow" aria-hidden="true">
+          <div class="glow-circle glow-red"></div>
+          <div class="glow-circle glow-blue"></div>
+          <div class="glow-circle glow-center"></div>
         </div>
-        <div class="scan"></div>
-        <div class="floor-glow"></div>
-      </div>
-    </section>
 
-    <section id="about" class="section">
-      <div class="section-head">
-        <p class="eyebrow">01 / ABOUT US</p>
-        <h2>Curiosity → <span>Capability.</span></h2>
-      </div>
-      <div class="about-grid">
-        <article class="glass big">
-          <h3>What is RCS?</h3>
-          <p>RCS Robotics Club @ SRC SASTRA brings together students curious about robotics, embedded systems, automation,
-            AI and intelligent machines. No prior experience required. Learn by building real things.</p>
-          <div class="pill-row"><span>🤖 Robotics</span><span>⚡ Embedded</span><span>🧠 AI / Vision</span><span>⚙️
-              Automation</span><span>🏁 Competitions</span></div>
-        </article>
-        <article class="glass">
-          <div class="icon">01</div>
-          <h3>Learn</h3>
-          <p>Structured tracks from electronics and sensors to control, kinematics, ROS 2 and autonomy.</p>
-        </article>
-        <article class="glass">
-          <div class="icon">02</div>
-          <h3>Build</h3>
-          <p>Turn concepts into prototypes with the club's project ecosystem and peer support.</p>
-        </article>
-        <article class="glass">
-          <div class="icon">03</div>
-          <h3>Compete</h3>
-          <p>Robot races, hackathons, showcases and challenges that force ideas into reality.</p>
-        </article>
-      </div>
-    </section>
+        <div class="hero-grid">
+          
+          <!-- LEFT COLUMN -->
+          <div class="hero-col hero-left">
+            <div class="hero-badge-pill">
+              <span class="pulse-indicator"></span>
+              <span>SRC SASTRA • ROBOTICS LAB</span>
+            </div>
+            
+            <h1 class="hero-title">
+              <span class="title-red">RCS</span> <span class="title-white">ROBOTICS</span>
+            </h1>
 
-    <section id="members" class="section">
-      <div class="section-head">
-        <p class="eyebrow">02 / THE PEOPLE</p>
-        <h2>Meet the <span>Builders.</span></h2>
-      </div>
-      <div id="membersGrid" class="card-grid"></div>
-    </section>
+            <p class="hero-desc" id="heroDesc">
+              A student-run space to learn, build, compete and turn wild ideas into working autonomous machines.
+            </p>
 
-    <section id="projects" class="section">
-      <div class="section-head">
-        <p class="eyebrow">03 / PROJECT LAB</p>
-        <h2>Ideas that <span>move.</span></h2>
-      </div>
-      <div id="projectsGrid" class="project-grid"></div>
-    </section>
+            <!-- Real mini-form: GET /feedback?message=... -->
+            <form action="/feedback" method="GET" class="hero-mini-form" id="heroMiniForm">
+              <label for="heroMiniInput" class="visually-hidden">Tell us what you think</label>
+              <input type="text" id="heroMiniInput" name="message" placeholder="Tell us what you think..." class="mini-input" required>
+              <button type="submit" class="btn btn-red btn-pill mini-send-btn" aria-label="Send feedback message">
+                <span>Send</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </button>
+            </form>
 
-    <section id="events" class="section">
-      <div class="section-head">
-        <p class="eyebrow">04 / WHAT'S NEXT</p>
-        <h2>Build days. <span>Big moments.</span></h2>
-      </div>
-      <div id="eventsGrid" class="event-list"></div>
-    </section>
+            <!-- Two icon + label feature items (inline SVG icons) -->
+            <div class="hero-features-list">
+              <div class="hero-feature-card">
+                <div class="feature-icon-wrapper" aria-hidden="true">
+                  <!-- Hands-on Builds Icon -->
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                  </svg>
+                </div>
+                <div class="feature-text">
+                  <div class="feature-title">Hands-on Builds</div>
+                  <div class="feature-sub">Autonomous rovers, manipulators &amp; PCBs</div>
+                </div>
+              </div>
 
-    <section id="learn" class="section">
-      <div class="section-head">
-        <p class="eyebrow">05 / RCS ACADEMY</p>
-        <h2>Robotics from <span>zero → hero.</span></h2>
-        <p>Every interactive experience points back to a concept, so playing becomes learning.</p>
-      </div>
-      <div id="learningGrid" class="learning-grid"></div>
-    </section>
+              <div class="hero-feature-card">
+                <div class="feature-icon-wrapper" aria-hidden="true">
+                  <!-- Learn Robotics Icon -->
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                    <rect x="9" y="9" width="6" height="6"></rect>
+                    <line x1="9" y1="1" x2="9" y2="4"></line>
+                    <line x1="15" y1="1" x2="15" y2="4"></line>
+                    <line x1="9" y1="20" x2="9" y2="23"></line>
+                    <line x1="15" y1="20" x2="15" y2="23"></line>
+                    <line x1="20" y1="9" x2="23" y2="9"></line>
+                    <line x1="20" y1="14" x2="23" y2="14"></line>
+                    <line x1="1" y1="9" x2="4" y2="9"></line>
+                    <line x1="1" y1="14" x2="4" y2="14"></line>
+                  </svg>
+                </div>
+                <div class="feature-text">
+                  <div class="feature-title">Learn Robotics</div>
+                  <div class="feature-sub">ROS 2, Embedded, Kinematics &amp; AI Vision</div>
+                </div>
+              </div>
+            </div>
 
-    <section id="play" class="section play-section">
-      <div class="section-head">
-        <p class="eyebrow">06 / RCS ARCADE</p>
-        <h2>Learn by <span>playing.</span></h2>
-        <p>Mini games designed around actual robotics ideas.</p>
-      </div>
-      <div class="play-grid">
-        <article class="game glass"><span class="game-tag">SENSORS</span>
-          <h3>Sensor Sprint</h3>
-          <p>Calibrate your virtual distance sensor and keep the robot in the safe zone.</p><button class="btn primary"
-            onclick="startSensorGame()">Play now</button>
-          <div id="sensorGame" class="gamebox hidden"></div>
-        </article>
-        <article class="game glass"><span class="game-tag">CONTROL</span>
-          <h3>PID Pilot</h3>
-          <p>Move a bot toward the target by tuning proportional control.</p><button class="btn primary"
-            onclick="startPIDGame()">Play now</button>
-          <div id="pidGame" class="gamebox hidden"></div>
-        </article>
-        <article class="game glass"><span class="game-tag">PATH PLANNING</span>
-          <h3>Warehouse Navigator</h3>
-          <p>Choose the shortest safe route through a robot warehouse grid.</p><button class="btn primary"
-            onclick="startPathGame()">Play now</button>
-          <div id="pathGame" class="gamebox hidden"></div>
-        </article>
-      </div>
-      <div id="quizArea" class="quiz-wrap glass">
-        <div><span class="game-tag">QUIZ ARENA</span>
-          <h3>Challenge your robot brain 🧠</h3>
-          <p>Pick a quiz, answer questions, get an instant explanation.</p>
+          </div>
+
+          <!-- CENTER COLUMN: ORIGINAL SVG ROBOT MASCOT -->
+          <div class="hero-col hero-center">
+            <div class="mascot-display-stage">
+              <div class="mascot-ambient-glow" aria-hidden="true"></div>
+              <div class="mascot-art-container" id="mascotArtBox">
+                <!-- Mascot Image with glowing blue eyes -->
+                <img src="/static/images/robot-mascot.svg" alt="RCS Robotics Club cybernetic mascot with glowing blue eyes" class="mascot-svg-img" id="heroMascotImg">
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: FEATURED -->
+          <div class="hero-col hero-right">
+            <div class="hero-featured-card">
+              <h2 class="featured-col-title">Featured.</h2>
+              <div class="featured-project-name" id="heroFeaturedProjName">Autonomous Line Follower</div>
+              <p class="featured-project-summary" id="heroFeaturedProjDesc">Fast, robust line-following robot with PID control and multi-sensor fusion.</p>
+              
+              <!-- Technology chips (pills) taken from first featured project's tech field -->
+              <div class="tech-chips-group" id="heroTechChips" aria-label="Project Technologies">
+                <span class="pill-chip chip-blue">ESP32</span>
+                <span class="pill-chip chip-blue">IR array</span>
+                <span class="pill-chip chip-blue">PID</span>
+              </div>
+
+              <!-- Large number stat -->
+              <div class="featured-stat-block">
+                <div class="stat-number-display" id="heroActiveProjectsCount">3</div>
+                <div class="stat-label-text">Active Builds In Lab</div>
+              </div>
+
+              <!-- View Projects text link -->
+              <a href="#projects" class="view-projects-arrow-link">
+                <span>View Projects</span>
+                <span class="arrow" aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+          </div>
+
         </div>
-        <div id="quizList" class="quiz-list"></div>
-      </div>
-    </section>
+      </section>
 
-    <section id="ideas" class="section ideas">
-      <div class="idea-panel glass">
-        <div class="section-head">
-          <p class="eyebrow">07 / YOUR CALL</p>
-          <h2>What should <span>RCS build next?</span></h2>
-          <p>Tell the club what events, projects, workshops or games you'd actually show up for. Your idea goes straight
-            into the club app.</p>
+      <!-- STAT RINGS SECTION (Below hero, built with CSS conic-gradient) -->
+      <section class="stat-rings-section" id="statRings" aria-label="Club Statistics">
+        <div class="stat-rings-container">
+          <div class="stat-rings-grid">
+            
+            <!-- Ring 1: MEMBERS (Red) -->
+            <div class="stat-ring-item">
+              <div class="conic-donut-ring ring-red" id="donutRingMembers" style="--percent: 8;" role="img" aria-label="Members goal ring">
+                <div class="donut-inner-hole">
+                  <span class="donut-val" id="statCountMembers">4</span>
+                </div>
+              </div>
+              <h3 class="stat-ring-heading">MEMBERS</h3>
+              <p class="stat-ring-sub">Active student builders, leads &amp; creators</p>
+            </div>
+
+            <!-- Ring 2: PROJECTS (Blue) -->
+            <div class="stat-ring-item">
+              <div class="conic-donut-ring ring-blue" id="donutRingProjects" style="--percent: 15;" role="img" aria-label="Projects goal ring">
+                <div class="donut-inner-hole">
+                  <span class="donut-val" id="statCountProjects">3</span>
+                </div>
+              </div>
+              <h3 class="stat-ring-heading">PROJECTS</h3>
+              <p class="stat-ring-sub">Autonomous bots, rovers &amp; manipulation arms</p>
+            </div>
+
+            <!-- Ring 3: EVENTS (White/Gray) -->
+            <div class="stat-ring-item">
+              <div class="conic-donut-ring ring-white" id="donutRingEvents" style="--percent: 15;" role="img" aria-label="Events goal ring">
+                <div class="donut-inner-hole">
+                  <span class="donut-val" id="statCountEvents">3</span>
+                </div>
+              </div>
+              <h3 class="stat-ring-heading">EVENTS</h3>
+              <p class="stat-ring-sub">Bootcamps, workshops &amp; campus competitions</p>
+            </div>
+
+            <!-- Ring 4: RESOURCES (Red) -->
+            <div class="stat-ring-item">
+              <div class="conic-donut-ring ring-red" id="donutRingResources" style="--percent: 30;" role="img" aria-label="Resources goal ring">
+                <div class="donut-inner-hole">
+                  <span class="donut-val" id="statCountResources">9</span>
+                </div>
+              </div>
+              <h3 class="stat-ring-heading">RESOURCES</h3>
+              <p class="stat-ring-sub">Curated modules, hardware guides &amp; quizzes</p>
+            </div>
+
+          </div>
         </div>
-        <form id="ideaForm" class="form-grid"><input name="name" placeholder="Your name"><input name="email"
-            type="email" placeholder="Email (optional)"><select name="type">
-            <option>event</option>
-            <option>project</option>
-            <option>workshop</option>
-            <option>game</option>
-            <option>other</option>
-          </select><input name="title" placeholder="Idea title" required><textarea name="message" rows="5"
-            placeholder="Tell us what you want RCS to conduct..." required></textarea><button class="btn primary"
-            type="submit">Send to RCS →</button><span id="ideaMsg" class="form-msg"></span></form>
+      </section>
+
+      <!-- ABOUT SECTION -->
+      <section id="about" class="site-section">
+        <div class="section-header">
+          <p class="section-eyebrow">01 / ABOUT US</p>
+          <h2 class="section-main-title">CURIOSITY &rarr; <span class="highlight-red">CAPABILITY.</span></h2>
+          <p class="section-subtext">Hands-on engineering culture designed to bridge textbooks to working hardware.</p>
+        </div>
+
+        <div class="about-cards-grid">
+          <article class="card card-dark about-feature-card">
+            <h3 class="about-card-title">What is RCS?</h3>
+            <p>RCS Robotics Club @ SRC SASTRA brings together students passionate about autonomous robotics, embedded microcontrollers, industrial automation, computer vision and machine intelligence. No prerequisites needed. You learn by designing, wiring, coding and breaking things safely in the lab.</p>
+            <div class="pills-flex-wrap">
+              <span class="pill-chip chip-blue">🤖 Robotics</span>
+              <span class="pill-chip chip-blue">⚡ Embedded</span>
+              <span class="pill-chip chip-blue">🧠 AI &amp; Vision</span>
+              <span class="pill-chip chip-blue">⚙️ Automation</span>
+              <span class="pill-chip chip-blue">🏁 Competitions</span>
+            </div>
+          </article>
+
+          <article class="card card-dark">
+            <div class="step-num-badge">01</div>
+            <h3 class="about-card-title">Learn</h3>
+            <p>Step-by-step modular tracks spanning circuit basics, microcontrollers, control theory, kinematics, ROS 2 and SLAM.</p>
+          </article>
+
+          <article class="card card-dark">
+            <div class="step-num-badge">02</div>
+            <h3 class="about-card-title">Build</h3>
+            <p>Transform ideas into field-ready prototypes using club hardware components, 3D printing and peer mentorship.</p>
+          </article>
+
+          <article class="card card-dark">
+            <div class="step-num-badge">03</div>
+            <h3 class="about-card-title">Compete</h3>
+            <p>Represent our campus in national robotics competitions, hackathons, track races and university showcases.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- MEMBERS SECTION -->
+      <section id="members" class="site-section">
+        <div class="section-header">
+          <p class="section-eyebrow">02 / THE PEOPLE</p>
+          <h2 class="section-main-title">MEET THE <span class="highlight-red">BUILDERS.</span></h2>
+          <p class="section-subtext">Multidisciplinary students collaborating across embedded, software and mechanical engineering.</p>
+        </div>
+        <div id="membersGrid" class="members-cards-grid" aria-live="polite"></div>
+      </section>
+
+      <!-- FEATURED PROJECTS SECTION -->
+      <section id="projects" class="site-section">
+        <div class="section-header">
+          <p class="section-eyebrow">03 / PROJECT LAB</p>
+          <h2 class="section-main-title">IDEAS THAT <span class="highlight-red">MOVE.</span></h2>
+          <p class="section-subtext">Featured prototypes engineered by club members with custom firmware and control algorithms.</p>
+        </div>
+        <div id="projectsGrid" class="projects-cards-grid" aria-live="polite"></div>
+      </section>
+
+      <!-- UPCOMING EVENTS SECTION -->
+      <section id="events" class="site-section">
+        <div class="section-header">
+          <p class="section-eyebrow">04 / WHAT'S NEXT</p>
+          <h2 class="section-main-title">BUILD DAYS. <span class="highlight-red">BIG MOMENTS.</span></h2>
+          <p class="section-subtext">Bootcamps, workshops and competitive arenas open to all robotics enthusiasts.</p>
+        </div>
+        <div id="eventsGrid" class="events-cards-list" aria-live="polite"></div>
+      </section>
+
+      <!-- GALLERY SECTION -->
+      <section id="gallery" class="site-section">
+        <div class="section-header">
+          <p class="section-eyebrow">05 / LAB &amp; ARENA</p>
+          <h2 class="section-main-title">ROBOTICS IN <span class="highlight-red">ACTION.</span></h2>
+          <p class="section-subtext">Glimpses into our fabrication tables, hardware testing sessions, and autonomous competition tracks.</p>
+        </div>
+        
+        <div class="gallery-grid">
+          <div class="card card-dark gallery-item">
+            <div class="gallery-preview-art art-pcb">
+              <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 7h.01M17 7h.01M7 17h.01M17 17h.01"/><path d="M12 7v10M7 12h10"/></svg>
+            </div>
+            <div class="gallery-info">
+              <span class="pill-chip chip-blue">HARDWARE</span>
+              <h3 class="gallery-title">Custom Sensor &amp; Driver PCBs</h3>
+              <p>Prototyping modular sensor arrays for high-speed line followers and motor bridges.</p>
+            </div>
+          </div>
+
+          <div class="card card-dark gallery-item">
+            <div class="gallery-preview-art art-arm">
+              <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M3 21l3-6 6 3 3-6 6 3"/><circle cx="18" cy="12" r="2"/></svg>
+            </div>
+            <div class="gallery-info">
+              <span class="pill-chip chip-blue">MANIPULATION</span>
+              <h3 class="gallery-title">Kinematics &amp; 3-DOF Arm</h3>
+              <p>Testing inverse kinematics coordinate tracking and precision gripper actuation.</p>
+            </div>
+          </div>
+
+          <div class="card card-dark gallery-item">
+            <div class="gallery-preview-art art-ros">
+              <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18M3 12h18"/></svg>
+            </div>
+            <div class="gallery-info">
+              <span class="pill-chip chip-blue">AUTONOMY</span>
+              <h3 class="gallery-title">ROS 2 Navigation &amp; SLAM</h3>
+              <p>Simulating lidar point-cloud mapping, obstacle avoidance, and global path planners.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RESOURCES / LEARNING TRACKS SECTION -->
+      <section id="resources" class="site-section">
+        <div class="section-header">
+          <p class="section-eyebrow">06 / RCS ACADEMY</p>
+          <h2 class="section-main-title">ROBOTICS FROM <span class="highlight-red">ZERO &rarr; HERO.</span></h2>
+          <p class="section-subtext">Structured engineering modules designed to transform curious minds into hands-on builders.</p>
+        </div>
+        <div id="learningGrid" class="resources-cards-grid" aria-live="polite"></div>
+      </section>
+
+      <!-- ARCADE / MINI GAMES & QUIZ SECTION -->
+      <section id="play" class="site-section">
+        <div class="section-header">
+          <p class="section-eyebrow">07 / RCS ARCADE</p>
+          <h2 class="section-main-title">LEARN BY <span class="highlight-red">PLAYING.</span></h2>
+          <p class="section-subtext">Interactive challenges designed around fundamental robotics math, sensors and control loops.</p>
+        </div>
+
+        <div class="arcade-grid">
+          <article class="card card-dark game-card">
+            <div class="game-header">
+              <span class="pill-chip chip-blue">SENSORS</span>
+              <h3 class="game-title">Sensor Sprint</h3>
+            </div>
+            <p>Calibrate a simulated ultrasonic distance sensor into the operational target window.</p>
+            <button class="btn btn-red btn-pill" onclick="startSensorGame()">Play now</button>
+            <div id="sensorGame" class="game-interactive-area hidden"></div>
+          </article>
+
+          <article class="card card-dark game-card">
+            <div class="game-header">
+              <span class="pill-chip chip-blue">CONTROL LOOPS</span>
+              <h3 class="game-title">PID Pilot</h3>
+            </div>
+            <p>Tune proportional gain (Kp) to minimize tracking error without excessive oscillation.</p>
+            <button class="btn btn-red btn-pill" onclick="startPIDGame()">Play now</button>
+            <div id="pidGame" class="game-interactive-area hidden"></div>
+          </article>
+
+          <article class="card card-dark game-card">
+            <div class="game-header">
+              <span class="pill-chip chip-blue">PATH PLANNING</span>
+              <h3 class="game-title">Warehouse Navigator</h3>
+            </div>
+            <p>Find the shortest collision-free grid sequence for an autonomous warehouse bot.</p>
+            <button class="btn btn-red btn-pill" onclick="startPathGame()">Play now</button>
+            <div id="pathGame" class="game-interactive-area hidden"></div>
+          </article>
+        </div>
+
+        <!-- QUIZ ARENA -->
+        <div id="quizArea" class="card card-dark quiz-container">
+          <div class="quiz-info-col">
+            <span class="pill-chip chip-blue">QUIZ ARENA</span>
+            <h3 class="quiz-title">Challenge Your Robot Brain ⚡</h3>
+            <p>Test your intuition across sensors, motor drivers, ROS 2 topics and forward kinematics.</p>
+          </div>
+          <div id="quizList" class="quiz-list-col"></div>
+        </div>
+      </section>
+
+      <!-- FEEDBACK CTA BANNER & FORM SECTION -->
+      <section id="feedback" class="site-section feedback-section">
+        <div class="feedback-banner-wrapper">
+          <div class="feedback-banner-glow" aria-hidden="true"></div>
+          
+          <div class="feedback-banner-content">
+            <div class="section-header banner-header">
+              <p class="section-eyebrow">08 / COMMUNITY SIGNAL</p>
+              <h2 class="section-main-title">WHAT SHOULD <span class="highlight-red">RCS BUILD NEXT?</span></h2>
+              <p class="section-subtext">Tell us what projects, competitions, workshops or components you want to see in the club. Your idea directly feeds our lab roadmap.</p>
+            </div>
+
+            <form id="ideaForm" class="feedback-form-grid">
+              <div class="form-group">
+                <label for="fbName">Your Name</label>
+                <input id="fbName" name="name" class="pill-input" placeholder="e.g. Dilip Kumar" required>
+              </div>
+
+              <div class="form-group">
+                <label for="fbEmail">Email Address (Optional)</label>
+                <input id="fbEmail" name="email" type="email" class="pill-input" placeholder="e.g. student@sastra.edu">
+              </div>
+
+              <div class="form-group">
+                <label for="fbType">Category</label>
+                <select id="fbType" name="type" class="pill-input">
+                  <option value="project">New Robot Project</option>
+                  <option value="workshop">Hands-on Workshop</option>
+                  <option value="competition">Arena Competition</option>
+                  <option value="resource">Tutorial / Guide</option>
+                  <option value="other">General Feedback</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="fbTitle">Idea Title</label>
+                <input id="fbTitle" name="title" class="pill-input" placeholder="e.g. Quadruped Robot Build" required>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="fbMessage">Your Proposal / Feedback</label>
+                <textarea id="fbMessage" name="message" rows="4" class="pill-input textarea-pill" placeholder="Describe your robotics idea or what you'd like the club to organize..." required></textarea>
+              </div>
+
+              <div class="form-actions full-width">
+                <button type="submit" class="btn btn-red btn-pill submit-idea-btn">
+                  <span>Send to RCS &rarr;</span>
+                </button>
+                <span id="ideaMsg" class="feedback-status-msg" role="status" aria-live="polite"></span>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="brand-skew-badge">
+            <span class="badge-text">RCS</span>
+          </div>
+          <div class="footer-brand-title">RCS ROBOTICS CLUB</div>
+          <p class="footer-tagline">Build. Learn. Innovate.</p>
+          <p class="footer-campus">Student-run robotics laboratory at SRC SASTRA University.</p>
+        </div>
+
+        <div class="footer-nav">
+          <div class="footer-nav-col">
+            <h4 class="footer-nav-title">EXPLORE</h4>
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#members">Members</a>
+            <a href="#projects">Projects</a>
+          </div>
+          <div class="footer-nav-col">
+            <h4 class="footer-nav-title">LEARN &amp; ACT</h4>
+            <a href="#events">Events</a>
+            <a href="#gallery">Gallery</a>
+            <a href="#resources">Resources</a>
+            <a href="#feedback">Feedback</a>
+          </div>
+          <div class="footer-nav-col">
+            <h4 class="footer-nav-title">PORTAL</h4>
+            <a href="/app" class="portal-link">Admin / Member App &rarr;</a>
+            <a href="/login" class="portal-link">Control Room Login &rarr;</a>
+          </div>
+        </div>
       </div>
-    </section>
-  </main>
-  <footer>
-    <div class="brand"><img src="/static/assets/rcs-logo.png" alt=""><span>RCS<span
-          class="blue">.ROBOTICS</span></span>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 RCS Robotics Club @ SRC SASTRA. All rights reserved.</p>
+        <p class="footer-note">Designed with precision for students building the autonomous future.</p>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Resource Modal Dialog -->
+  <dialog id="resourceModal" class="resource-modal-dialog">
+    <div class="card card-dark modal-card-content">
+      <div class="modal-head">
+        <span class="pill-chip chip-blue" id="modalCategory">Category</span>
+        <button class="modal-close-btn" onclick="closeLessonModal()" aria-label="Close dialog">&times;</button>
+      </div>
+      <h3 class="modal-title" id="modalTitle">Lesson Title</h3>
+      <div class="modal-body" id="modalContent"></div>
+      <div class="modal-footer">
+        <button class="btn btn-red btn-pill" onclick="closeLessonModal()">Close Resource</button>
+      </div>
     </div>
-    <p>Robotics Club @ SRC SASTRA • Build. Learn. Compete.</p><a href="/app">Club App / Admin Portal ↗</a>
-  </footer>
+  </dialog>
+
   <script src="/static/app.js"></script>
 </body>
-
 </html>

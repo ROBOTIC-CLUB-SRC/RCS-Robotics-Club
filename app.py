@@ -1,8 +1,10 @@
 import json
 import os, sqlite3
+from urllib.parse import quote
 from functools import wraps
 from pathlib import Path
 from flask import Flask, jsonify, request, session, render_template, send_from_directory, redirect
+import config
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 
@@ -197,19 +199,35 @@ def rows(table):
     con=db(); data=[dict(r) for r in con.execute(f"SELECT * FROM {table}").fetchall()]; con.close(); return data
 
 @app.route("/")
-def home(): return render_template("index.html")
+def home():
+    return render_template("index.html", config=config)
+
 @app.route("/app")
-def admin_app(): return render_template("admin.html")
+def admin_app(): return render_template("admin.html", config=config)
+
 @app.route("/login")
-def login_page(): return render_template("admin.html")
+def login_page(): return render_template("admin.html", config=config)
+
 @app.route("/feedback")
-def feedback_page(): return redirect("/#ideas")
+def feedback_page():
+    msg = request.args.get("message", "")
+    if msg:
+        return redirect(f"/?message={quote(msg)}#feedback")
+    return redirect("/#feedback")
+
 @app.route("/manifest.json")
 def manifest(): return send_from_directory(BASE/"static","manifest.json")
 
 @app.get("/api/public/all")
 def public_all():
-    return jsonify({t:rows(t) for t in ["members","projects","events","quizzes","games","learning"]})
+    data = {t: rows(t) for t in ["members", "projects", "events", "quizzes", "games", "learning"]}
+    data["goals"] = config.GOALS
+    data["club"] = {
+        "name": config.CLUB_NAME,
+        "tagline": config.CLUB_TAGLINE,
+        "description": config.CLUB_DESCRIPTION
+    }
+    return jsonify(data)
 
 @app.post("/api/auth/login")
 def login():
