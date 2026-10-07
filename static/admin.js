@@ -1,25 +1,386 @@
-let me=null, currentData={};const configs={
-members:{title:'Members',fields:[['name','Name'],['role','Role'],['department','Department'],['year','Year'],['bio','Bio'],['image_url','Image URL'],['skills','Skills'],['featured','Featured (0/1)']]},
-projects:{title:'Projects',fields:[['title','Title'],['category','Category'],['description','Description'],['tech','Tech stack'],['status','Status'],['image_url','Image URL'],['demo_url','Demo URL']]},
-events:{title:'Events',fields:[['title','Title'],['date','Date'],['time','Time'],['venue','Venue'],['description','Description'],['image_url','Image URL'],['registration_url','Registration URL']]},
-learning:{title:'Learning tracks',fields:[['title','Title'],['level','Level'],['category','Category'],['description','Short description'],['content','Lesson content'],['order_no','Order']]},
-games:{title:'Games',fields:[['title','Title'],['topic','Topic'],['description','Description'],['game_type','Game type'],['difficulty','Difficulty']]},
-quizzes:{title:'Quizzes',fields:[['title','Title'],['topic','Topic'],['difficulty','Difficulty'],['description','Description'],['questions_json','Questions JSON (array)']]}
+// ==========================================================================
+// RCS Control Room — Admin & Member Portal JavaScript
+// ==========================================================================
+
+let me = null;
+let currentData = {};
+
+const configs = {
+  members: {
+    title: 'Members',
+    fields: [
+      ['name', 'Name'],
+      ['role', 'Role'],
+      ['department', 'Department'],
+      ['year', 'Year'],
+      ['bio', 'Bio'],
+      ['image_url', 'Image URL'],
+      ['skills', 'Skills (comma separated)'],
+      ['featured', 'Featured (1 or 0)']
+    ]
+  },
+  projects: {
+    title: 'Projects',
+    fields: [
+      ['title', 'Title'],
+      ['category', 'Category'],
+      ['description', 'Description'],
+      ['tech', 'Tech Stack (comma separated)'],
+      ['status', 'Status (Prototype / In Progress / Active)'],
+      ['image_url', 'Image URL'],
+      ['demo_url', 'Demo URL']
+    ]
+  },
+  events: {
+    title: 'Events',
+    fields: [
+      ['title', 'Title'],
+      ['date', 'Date (YYYY-MM-DD)'],
+      ['time', 'Time'],
+      ['venue', 'Venue'],
+      ['description', 'Description'],
+      ['image_url', 'Image URL'],
+      ['registration_url', 'Registration URL']
+    ]
+  },
+  learning: {
+    title: 'Learning Tracks',
+    fields: [
+      ['title', 'Title'],
+      ['level', 'Level (Beginner / Intermediate / Advanced)'],
+      ['category', 'Category'],
+      ['description', 'Short Description'],
+      ['content', 'Full Lesson Content'],
+      ['order_no', 'Display Order (Number)']
+    ]
+  },
+  games: {
+    title: 'Games',
+    fields: [
+      ['title', 'Title'],
+      ['topic', 'Topic'],
+      ['description', 'Description'],
+      ['game_type', 'Game Type (sensor / pid / path)'],
+      ['difficulty', 'Difficulty']
+    ]
+  },
+  quizzes: {
+    title: 'Quizzes',
+    fields: [
+      ['title', 'Title'],
+      ['topic', 'Topic'],
+      ['difficulty', 'Difficulty'],
+      ['description', 'Description'],
+      ['questions_json', 'Questions JSON (array of {q, options, answer, explain})']
+    ]
+  }
 };
-async function api(url,opt={}){const r=await fetch(url,{headers:{'Content-Type':'application/json',...(opt.headers||{})},...opt});let j={};try{j=await r.json()}catch{}if(!r.ok)throw new Error(j.error||'Request failed');return j}
-async function boot(){me=await api('/api/auth/me');if(!me.authenticated)return showLogin();document.getElementById('loginPanel').classList.add('hidden');document.getElementById('dashboardPanel').classList.remove('hidden');document.getElementById('dashName').textContent=me.name.split(' ')[0];document.getElementById('roleChip').textContent=me.role.toUpperCase();document.getElementById('userBadge').innerHTML=`<b>${esc(me.name)}</b><br>${esc(me.email)}<br><span>${esc(me.role)}</span>`;showPanel('overview');}
-function showLogin(){document.getElementById('loginPanel').classList.remove('hidden');document.getElementById('dashboardPanel').classList.add('hidden')}
-document.getElementById('loginForm')?.addEventListener('submit',async e=>{e.preventDefault();const b=Object.fromEntries(new FormData(e.target));try{await api('/api/auth/login',{method:'POST',body:JSON.stringify(b)});document.getElementById('loginMsg').textContent='Login successful ⚡';boot()}catch(err){document.getElementById('loginMsg').textContent=err.message}});
-async function logout(){await api('/api/auth/logout',{method:'POST'});location.reload()}
-function showPanel(id){document.querySelectorAll('#dashboardPanel .panel').forEach(x=>x.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');if(id==='overview')loadOverview();else if(id==='feedback')loadFeedback();else loadResource(id)}
-async function loadOverview(){const all=await api('/api/public/all');document.getElementById('metrics').innerHTML=Object.entries(all).map(([k,v])=>`<div class="metric glass"><b>${v.length}</b><span>${k}</span></div>`).join('')}
-async function loadResource(type){const c=configs[type];const data=await api('/api/admin/'+type);currentData[type]=data;const p=document.getElementById(type);p.innerHTML=`<div class="panel-head"><div><p class="eyebrow">CONTENT MANAGER</p><h2>${c.title}</h2></div><button class="btn primary" onclick="openEditor('${type}')">+ Add ${c.title.slice(0,-1)||c.title}</button></div><div class="editor hidden" id="${type}Editor"></div><div class="table-wrap"><table class="data-table"><thead><tr>${c.fields.slice(0,5).map(f=>`<th>${f[1]}</th>`).join('')}<th>Actions</th></tr></thead><tbody>${data.map(x=>`<tr>${c.fields.slice(0,5).map(f=>`<td>${esc(String(x[f[0]]??'').slice(0,80))}</td>`).join('')}<td><div class="actions"><button class="small-btn" onclick="openEditor('${type}',${x.id})">Edit</button><button class="small-btn danger" onclick="removeItem('${type}',${x.id})">Delete</button></div></td></tr>`).join('')}</tbody></table></div>`}
-function openEditor(type,id=null){const c=configs[type],item=id?currentData[type].find(x=>x.id===id):{};const el=document.getElementById(type+'Editor');el.classList.remove('hidden');el.innerHTML=`<form class="editor-form"><div class="editor-grid">${c.fields.map(([k,l])=>`<label class="${['bio','description','content','questions_json'].includes(k)?'full':''}">${l}<${['bio','description','content','questions_json'].includes(k)?'textarea':'input'} name="${k}" ${k==='questions_json'?'rows="8"':''}>${esc(item[k]??'')}</${['bio','description','content','questions_json'].includes(k)?'textarea':'input'}></label>`).join('')}</div><div class="editor-actions"><button type="button" class="btn primary" onclick="saveItem('${type}',${id||'null'})">Save changes</button><button type="button" class="btn ghost" onclick="document.getElementById('${type}Editor').classList.add('hidden')">Cancel</button></div></form>`}
-async function saveItem(type,id){const el=document.getElementById(type+'Editor');const b=Object.fromEntries(new FormData(el.querySelector('.editor-form')));if(id){await api(`/api/admin/${type}/${id}`,{method:'PUT',body:JSON.stringify(b)})}else{await api(`/api/admin/${type}`,{method:'POST',body:JSON.stringify(b)})}loadResource(type)}
-async function removeItem(type,id){if(!confirm('Delete this item?'))return;await api(`/api/admin/${type}/${id}`,{method:'DELETE'});loadResource(type)}
-async function loadFeedback(){const data=await api('/api/admin/feedback');document.getElementById('feedback').innerHTML=`<div class="panel-head"><div><p class="eyebrow">COMMUNITY SIGNAL</p><h2>Ideas & requests</h2></div></div>${data.length?data.map(x=>`<article class="feedback-card"><span class="status">${esc(x.status)}</span><h3>${esc(x.title||x.type||'Idea')}</h3><div class="muted">${esc(x.name||'Anonymous')} ${x.email?'• '+esc(x.email):''} • ${esc(x.created_at)}</div><p>${esc(x.message)}</p><button class="small-btn" onclick="markFeedback(${x.id})">Mark reviewed</button></article>`).join(''):'<div class="glass" style="padding:25px;color:#999">No requests yet.</div>'}`}
-async function markFeedback(id){await api('/api/admin/feedback/'+id,{method:'PUT',body:JSON.stringify({status:'reviewed'})});loadFeedback()}
-function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  }[c]));
+}
+
+async function api(url, opt = {}) {
+  const r = await fetch(url, {
+    headers: { 'Content-Type': 'application/json', ...(opt.headers || {}) },
+    ...opt
+  });
+  let j = {};
+  try {
+    j = await r.json();
+  } catch (e) {}
+  if (!r.ok) throw new Error(j.error || 'Request failed');
+  return j;
+}
+
+// Bootstrap authentication check
+async function boot() {
+  try {
+    me = await api('/api/auth/me');
+    if (!me || !me.authenticated) {
+      showLogin();
+      return;
+    }
+
+    document.getElementById('loginPanel').classList.add('hidden');
+    document.getElementById('dashboardPanel').classList.remove('hidden');
+
+    const dashName = document.getElementById('dashName');
+    if (dashName) dashName.textContent = me.name.split(' ')[0];
+
+    const roleChip = document.getElementById('roleChip');
+    if (roleChip) roleChip.textContent = (me.role || 'MEMBER').toUpperCase();
+
+    const userBadge = document.getElementById('userBadge');
+    if (userBadge) {
+      userBadge.innerHTML = `
+        <strong style="color:#FFFFFF;display:block">${esc(me.name)}</strong>
+        <span style="display:block">${esc(me.email)}</span>
+        <span class="pill-chip chip-blue" style="margin-top:6px">${esc(me.role)}</span>
+      `;
+    }
+
+    showPanel('overview');
+  } catch (err) {
+    showLogin();
+  }
+}
+
+function showLogin() {
+  document.getElementById('loginPanel').classList.remove('hidden');
+  document.getElementById('dashboardPanel').classList.add('hidden');
+}
+
+// Login form
+document.getElementById('loginForm')?.addEventListener('submit', async e => {
+  e.preventDefault();
+  const form = e.target;
+  const b = Object.fromEntries(new FormData(form));
+  const msg = document.getElementById('loginMsg');
+
+  try {
+    await api('/api/auth/login', { method: 'POST', body: JSON.stringify(b) });
+    if (msg) {
+      msg.style.color = 'var(--blue-bright)';
+      msg.textContent = 'Authenticated. Loading control room...';
+    }
+    setTimeout(boot, 400);
+  } catch (err) {
+    if (msg) {
+      msg.style.color = 'var(--red-bright)';
+      msg.textContent = err.message || 'Login failed';
+    }
+  }
+});
+
+async function logout() {
+  await api('/api/auth/logout', { method: 'POST' });
+  location.reload();
+}
+
+// Switch between panels and update red active sidebar indicator
+function showPanel(id) {
+  // Hide all panels
+  document.querySelectorAll('#dashboardPanel .admin-tab-panel').forEach(p => p.classList.add('hidden'));
+
+  const target = document.getElementById(id);
+  if (target) target.classList.remove('hidden');
+
+  // Update active indicator in sidebar
+  document.querySelectorAll('.side-nav-item').forEach(btn => btn.classList.remove('active'));
+  const activeBtn = document.getElementById(`nav-${id}`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  // Load panel content
+  if (id === 'overview') {
+    loadOverview();
+  } else if (id === 'feedback') {
+    loadFeedback();
+  } else {
+    loadResource(id);
+  }
+
+  // Close mobile sidebar if open
+  document.getElementById('adminSidebar')?.classList.remove('mobile-open');
+}
+
+// Toggle mobile sidebar
+function toggleAdminSidebar() {
+  document.getElementById('adminSidebar')?.classList.toggle('mobile-open');
+}
+
+// 1. Overview Panel: dark cards with blue numbers, red quick-action buttons
+async function loadOverview() {
+  try {
+    const all = await api('/api/public/all');
+    const metricsContainer = document.getElementById('metrics');
+    if (!metricsContainer) return;
+
+    metricsContainer.innerHTML = Object.entries(all)
+      .filter(([k]) => ['members', 'projects', 'events', 'learning'].includes(k))
+      .map(([k, v]) => `
+        <div class="card metric-card">
+          <div class="metric-number">${Array.isArray(v) ? v.length : 0}</div>
+          <div class="metric-label">${k}</div>
+          <button class="btn btn-red btn-pill" style="margin-top:14px;padding:6px 14px;font-size:11px" onclick="showPanel('${k}')">
+            Manage &rarr;
+          </button>
+        </div>
+      `).join('');
+  } catch (err) {
+    console.error('Error loading overview metrics:', err);
+  }
+}
+
+// 2. Resource Management: dark tables with hover rows, blue edit buttons, red delete buttons
+async function loadResource(type) {
+  const c = configs[type];
+  if (!c) return;
+
+  const data = await api('/api/admin/' + type);
+  currentData[type] = data;
+  const p = document.getElementById(type);
+  if (!p) return;
+
+  p.innerHTML = `
+    <div class="panel-header-row">
+      <div>
+        <p class="section-eyebrow">RESOURCE CONTROLLER</p>
+        <h2 class="panel-title">${c.title}</h2>
+      </div>
+      <button class="btn btn-red btn-pill" onclick="openEditor('${type}')">+ Add New ${c.title.replace(/s$/, '')}</button>
+    </div>
+
+    <div class="admin-editor-card hidden" id="${type}Editor"></div>
+
+    <div class="table-wrapper">
+      <table class="admin-data-table">
+        <thead>
+          <tr>
+            ${c.fields.slice(0, 4).map(f => `<th>${f[1]}</th>`).join('')}
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${data.map(x => `
+            <tr>
+              ${c.fields.slice(0, 4).map(f => `<td>${esc(String(x[f[0]] ?? '').slice(0, 80))}</td>`).join('')}
+              <td>
+                <div class="table-actions">
+                  <button class="btn-table-edit" onclick="openEditor('${type}', ${x.id})">Edit</button>
+                  <button class="btn-table-delete" onclick="removeItem('${type}', ${x.id})">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+// Editor modal form
+function openEditor(type, id = null) {
+  const c = configs[type];
+  const item = id ? currentData[type].find(x => x.id === id) : {};
+  const el = document.getElementById(type + 'Editor');
+  if (!el) return;
+
+  el.classList.remove('hidden');
+  el.innerHTML = `
+    <h3 style="font-size:18px;margin-bottom:16px">${id ? 'Edit' : 'Create'} ${c.title.replace(/s$/, '')}</h3>
+    <form class="editor-form" onsubmit="event.preventDefault(); saveItem('${type}', ${id || 'null'});">
+      <div class="admin-editor-grid">
+        ${c.fields.map(([k, l]) => `
+          <label class="${['bio', 'description', 'content', 'questions_json'].includes(k) ? 'full' : ''}">
+            ${l}
+            ${['bio', 'description', 'content', 'questions_json'].includes(k)
+              ? `<textarea name="${k}" class="pill-input textarea-pill" rows="${k === 'questions_json' ? 6 : 3}">${esc(item[k] ?? '')}</textarea>`
+              : `<input name="${k}" class="pill-input" value="${esc(item[k] ?? '')}">`
+            }
+          </label>
+        `).join('')}
+      </div>
+      <div class="admin-editor-actions">
+        <button type="submit" class="btn btn-red btn-pill">Save Changes</button>
+        <button type="button" class="btn btn-ghost" onclick="document.getElementById('${type}Editor').classList.add('hidden')">Cancel</button>
+      </div>
+    </form>
+  `;
+}
+
+async function saveItem(type, id) {
+  const el = document.getElementById(type + 'Editor');
+  const form = el.querySelector('.editor-form');
+  const b = Object.fromEntries(new FormData(form));
+
+  if (id) {
+    await api(`/api/admin/${type}/${id}`, { method: 'PUT', body: JSON.stringify(b) });
+  } else {
+    await api(`/api/admin/${type}`, { method: 'POST', body: JSON.stringify(b) });
+  }
+
+  loadResource(type);
+}
+
+async function removeItem(type, id) {
+  if (!confirm(`Are you sure you want to delete this ${type.replace(/s$/, '')}?`)) return;
+  await api(`/api/admin/${type}/${id}`, { method: 'DELETE' });
+  loadResource(type);
+}
+
+// 3. Feedback Signals: Status Badges RED = 'new', BLUE = 'reviewed' (NO green or gray allowed)
+async function loadFeedback() {
+  const data = await api('/api/admin/feedback');
+  const p = document.getElementById('feedback');
+  if (!p) return;
+
+  p.innerHTML = `
+    <div class="panel-header-row">
+      <div>
+        <p class="section-eyebrow">COMMUNITY INPUT</p>
+        <h2 class="panel-title">Feedback &amp; Idea Signals</h2>
+      </div>
+    </div>
+    
+    <div style="display:grid;gap:14px">
+      ${data.length ? data.map(x => {
+        const isNew = (x.status || 'new') === 'new';
+        const badgeClass = isNew ? 'badge-red' : 'badge-blue';
+        const statusText = isNew ? 'NEW' : 'REVIEWED';
+
+        return `
+          <article class="card feedback-admin-card">
+            <div class="feedback-head">
+              <span class="status-badge ${badgeClass}">${statusText}</span>
+              <small class="feedback-meta">${esc(x.created_at || '')}</small>
+            </div>
+            <h3 style="font-size:18px">${esc(x.title || x.type || 'Idea Proposal')}</h3>
+            <div class="feedback-meta">
+              <strong>${esc(x.name || 'Anonymous')}</strong> &bull; ${esc(x.email || 'No email provided')} &bull; Category: <span class="pill-chip chip-blue">${esc(x.type || 'idea')}</span>
+            </div>
+            <p style="color:var(--text);font-size:14px;line-height:1.6;background:var(--surface-2);padding:14px;border-radius:10px;border:1px solid var(--border-subtle)">
+              ${esc(x.message)}
+            </p>
+            <div style="display:flex;gap:10px;margin-top:6px">
+              ${isNew ? `
+                <button class="btn btn-blue btn-pill" style="padding:6px 16px;font-size:12px" onclick="markFeedback(${x.id}, 'reviewed')">
+                  Mark Reviewed
+                </button>
+              ` : `
+                <button class="btn btn-red btn-pill" style="padding:6px 16px;font-size:12px" onclick="markFeedback(${x.id}, 'new')">
+                  Mark as New
+                </button>
+              `}
+            </div>
+          </article>
+        `;
+      }).join('') : `
+        <div class="card" style="padding:30px;text-align:center;color:var(--text-muted)">
+          No feedback entries received yet.
+        </div>
+      `}
+    </div>
+  `;
+}
+
+async function markFeedback(id, newStatus = 'reviewed') {
+  await api(`/api/admin/feedback/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({ status: newStatus })
+  });
+  loadFeedback();
+}
+
+// Initialize admin boot
 boot();
 
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/static/sw.js').catch(()=>{});}
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/static/sw.js').catch(() => {});
+}

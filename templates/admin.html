@@ -1,79 +1,167 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="theme-color" content="#070712">
-    <link rel="manifest" href="/manifest.json">
-    <link rel="icon" href="/static/assets/rcs-logo.png">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="/static/style.css">
-    <title>RCS Club App</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0A0A0F">
+  <meta name="description" content="RCS Club Control Room — Admin & Member Portal">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/static/assets/rcs-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,600;1,700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <title>RCS Control Room • Admin Portal</title>
 </head>
-
 <body class="app-body">
-    <div class="app-shell">
-        <aside class="sidebar"><a class="brand" href="/"><img src="/static/assets/rcs-logo.png"><span>RCS<span
-                        class="blue">.APP</span></span></a>
-            <div id="userBadge" class="user-badge"></div><button class="btn ghost" style="width:100%;margin-top:10px"
-                onclick="logout()">↪ Logout</button>
-            <div class="side-links"><button onclick="showPanel('overview')">⌂ Overview</button><button
-                    onclick="showPanel('members')">◉ Members</button><button onclick="showPanel('projects')">◈
-                    Projects</button><button onclick="showPanel('events')">◷ Events</button><button
-                    onclick="showPanel('learning')">✦ Learning</button><button onclick="showPanel('quizzes')">?
-                    Quizzes</button><button onclick="showPanel('games')">⚡ Games</button><button
-                    onclick="showPanel('feedback')">✉ Ideas & Requests</button></div>
-            <div class="side-bottom"><a href="/">← Public website</a><button onclick="logout()">Log out</button></div>
-        </aside>
-        <main class="dashboard">
-            <div class="mobile-top"><a href="/" class="brand"><img
-                        src="/static/assets/rcs-logo.png"><span>RCS<span class="blue">.APP</span></span></a>
-            </div>
-            <section id="loginPanel" class="login-screen">
-                <div class="login-card glass"><img src="/static/assets/rcs-logo.png" class="login-logo">
-                    <p class="eyebrow">RCS CONTROL ROOM</p>
-                    <h1>Common <span>Login.</span></h1>
-                    <p>Faculty and members use the same portal. Permissions are role-based.</p>
-                    <form id="loginForm"><input name="email" type="email" placeholder="Email" required><input
-                            name="password" type="password" placeholder="Password" required><button class="btn primary"
-                            type="submit">Enter RCS App →</button>
-                        <div id="loginMsg" class="form-msg"></div>
-                    </form>
-                    <div class("demo-login"><b>Demo accounts</b><br>Faculty: faculty@rcs-sastra.org<br>Member:
-                        member@rcs-sastra.org<br>Password: RCS@2026</div>
-                </div>
-            </section>
-            <section id="dashboardPanel" class="hidden">
-                <div class="dash-head">
-                    <div>
-                        <p class="eyebrow">RCS CONTROL ROOM</p>
-                        <h1>Welcome back, <span id="dashName">Builder</span>.</h1>
-                    </div>
-                    <div class="role-chip" id="roleChip"></div>
-                </div>
-                <div id="overview" class="panel">
-                    <div class="metric-grid" id="metrics"></div>
-                    <div class="quick glass">
-                        <h2>Live website sync</h2>
-                        <p>Everything you edit here is saved to the same database the public website reads. Publish a
-                            member, project or event and refresh the public page to see it.</p><button class="btn ghost"
-                            onclick="window.open('/','_blank')">Open public website ↗</button>
-                    </div>
-                </div>
-                <div id="members" class="panel hidden"></div>
-                <div id="projects" class="panel hidden"></div>
-                <div id="events" class="panel hidden"></div>
-                <div id="learning" class="panel hidden"></div>
-                <div id="quizzes" class="panel hidden"></div>
-                <div id="games" class="panel hidden"></div>
-                <div id="feedback" class="panel hidden"></div>
-            </section>
-        </main>
-    </div>
-    <script src="/static/admin.js"></script>
-</body>
+  <div class="app-shell">
+    
+    <!-- DENSE BLACK SIDEBAR WITH RED ACTIVE INDICATOR -->
+    <aside class="sidebar" id="adminSidebar">
+      <div class="sidebar-top">
+        <a class="brand-link" href="/" aria-label="Back to Public Website">
+          <div class="brand-skew-badge">
+            <span class="badge-text">RCS</span>
+          </div>
+          <div class="brand-details">
+            <span class="brand-name">CONTROL ROOM</span>
+            <span class="brand-tagline">ADMIN PORTAL</span>
+          </div>
+        </a>
 
+        <div id="userBadge" class="admin-user-card card-dark">
+          <!-- Populated by admin.js -->
+        </div>
+      </div>
+
+      <nav class="side-nav-links" id="sideNavLinks" aria-label="Admin Navigation">
+        <button type="button" class="side-nav-item active" onclick="showPanel('overview')" id="nav-overview">
+          <span class="nav-icon">⌂</span>
+          <span class="nav-text">Overview</span>
+        </button>
+        <button type="button" class="side-nav-item" onclick="showPanel('members')" id="nav-members">
+          <span class="nav-icon">◉</span>
+          <span class="nav-text">Members</span>
+        </button>
+        <button type="button" class="side-nav-item" onclick="showPanel('projects')" id="nav-projects">
+          <span class="nav-icon">◈</span>
+          <span class="nav-text">Projects</span>
+        </button>
+        <button type="button" class="side-nav-item" onclick="showPanel('events')" id="nav-events">
+          <span class="nav-icon">◷</span>
+          <span class="nav-text">Events</span>
+        </button>
+        <button type="button" class="side-nav-item" onclick="showPanel('learning')" id="nav-learning">
+          <span class="nav-icon">✦</span>
+          <span class="nav-text">Learning</span>
+        </button>
+        <button type="button" class="side-nav-item" onclick="showPanel('quizzes')" id="nav-quizzes">
+          <span class="nav-icon">?</span>
+          <span class="nav-text">Quizzes</span>
+        </button>
+        <button type="button" class="side-nav-item" onclick="showPanel('games')" id="nav-games">
+          <span class="nav-icon">⚡</span>
+          <span class="nav-text">Games</span>
+        </button>
+        <button type="button" class="side-nav-item" onclick="showPanel('feedback')" id="nav-feedback">
+          <span class="nav-icon">✉</span>
+          <span class="nav-text">Feedback &amp; Ideas</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <a href="/" class="side-btn-ghost">&larr; Public Website</a>
+        <button type="button" class="btn btn-red btn-pill side-logout-btn" onclick="logout()">Log Out</button>
+      </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD AREA -->
+    <main class="dashboard-main">
+      
+      <!-- Mobile Bar -->
+      <header class="admin-mobile-bar">
+        <a class="brand-link" href="/">
+          <div class="brand-skew-badge">
+            <span class="badge-text">RCS</span>
+          </div>
+          <span class="brand-name">CONTROL ROOM</span>
+        </a>
+        <button class="nav-toggle" onclick="toggleAdminSidebar()" aria-label="Toggle menu">☰</button>
+      </header>
+
+      <!-- LOGIN PANEL -->
+      <section id="loginPanel" class="admin-login-screen">
+        <div class="login-box card card-dark">
+          <div class="brand-skew-badge login-badge">
+            <span class="badge-text">RCS</span>
+          </div>
+          <p class="section-eyebrow">RCS CONTROL ROOM</p>
+          <h1 class="login-heading">SIGN <span class="highlight-red">IN.</span></h1>
+          <p class="login-sub">Faculty and members access the live database and management dashboard.</p>
+          
+          <form id="loginForm" class="login-form">
+            <div class="form-group">
+              <label for="adminEmail">Email Address</label>
+              <input id="adminEmail" name="email" type="email" class="pill-input" placeholder="faculty@rcs-sastra.org" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="adminPass">Password</label>
+              <input id="adminPass" name="password" type="password" class="pill-input" placeholder="••••••••" required>
+            </div>
+            
+            <button class="btn btn-red btn-pill login-submit-btn" type="submit">Enter Control Room &rarr;</button>
+            <div id="loginMsg" class="feedback-status-msg" role="status" aria-live="polite"></div>
+          </form>
+
+          <div class="demo-creds-card">
+            <strong>Demo Credentials:</strong><br>
+            <span>Faculty: <code>faculty@rcs-sastra.org</code> / <code>RCS@2026</code></span><br>
+            <span>Member: <code>member@rcs-sastra.org</code> / <code>RCS@2026</code></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- AUTHENTICATED DASHBOARD PANELS -->
+      <section id="dashboardPanel" class="admin-dashboard-container hidden">
+        <div class="dash-top-bar">
+          <div>
+            <p class="section-eyebrow">RCS CONTROL ROOM</p>
+            <h1 class="dash-greeting">Welcome back, <span id="dashName" class="highlight-red">Builder</span>.</h1>
+          </div>
+          <div class="role-chip pill-chip chip-blue" id="roleChip">FACULTY</div>
+        </div>
+
+        <!-- Overview Panel -->
+        <div id="overview" class="admin-tab-panel">
+          <div class="metric-cards-grid" id="metrics"></div>
+
+          <div class="card card-dark sync-card">
+            <div class="sync-card-body">
+              <h2 class="sync-title">Live Website Synchronization</h2>
+              <p>All database records created, edited, or deleted in this portal immediately sync to the public website without needing redeployment.</p>
+            </div>
+            <div class="sync-card-actions">
+              <button class="btn btn-red btn-pill" onclick="window.open('/','_blank')">Open Public Website &rarr;</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resource Panels (Populated dynamically by admin.js) -->
+        <div id="members" class="admin-tab-panel hidden"></div>
+        <div id="projects" class="admin-tab-panel hidden"></div>
+        <div id="events" class="admin-tab-panel hidden"></div>
+        <div id="learning" class="admin-tab-panel hidden"></div>
+        <div id="quizzes" class="admin-tab-panel hidden"></div>
+        <div id="games" class="admin-tab-panel hidden"></div>
+        <div id="feedback" class="admin-tab-panel hidden"></div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <script src="/static/admin.js"></script>
+</body>
 </html>

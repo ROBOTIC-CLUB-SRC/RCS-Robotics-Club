@@ -3,11 +3,17 @@ services:
     name: rcs-robotics-club
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
+    healthCheckPath: /health
     envVars:
       - key: SECRET_KEY
         generateValue: true
-    disk:
-      name: rcs-data
-      mountPath: /opt/render/project/src/data
-      sizeGB: 1
+      - key: DATABASE_URL
+        fromDatabase:
+          name: rcs-robotics-db
+          property: connectionString
+
+databases:
+  - name: rcs-robotics-db
+    databaseName: rcs_robotics
+    user: rcs_robotics
