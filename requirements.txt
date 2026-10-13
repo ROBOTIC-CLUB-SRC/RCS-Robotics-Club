@@ -1,4 +1,5 @@
 Flask>=3.0,<4
 Werkzeug>=3.0,<4
 gunicorn>=23,<24
-psycopg[binary]>=3.2,<4
+supabase>=2.0,<3
+python-dotenv>=1.0,<2

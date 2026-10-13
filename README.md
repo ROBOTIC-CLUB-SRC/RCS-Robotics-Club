@@ -80,7 +80,7 @@ Do **not** commit `.env`, `data/rcs.db`, or uploaded private material.
 
 ## 4. Deployment
 
-This repo includes a `render.yaml` + `Procfile` for Render. Render provisions a managed PostgreSQL database and injects its connection string as `DATABASE_URL`. When `DATABASE_URL` is absent, the app automatically uses `data/rcs.db` for local development.
+This repo includes a `render.yaml` + `Procfile` for Render. Supabase is configured through `SUPABASE_URL` and `SUPABASE_KEY` environment variables. The Supabase todo example is available at `/supabase` and `/api/supabase/todos`.
 
 Recommended production stack:
 - Flask API
@@ -91,9 +91,11 @@ Recommended production stack:
 - A real email/password reset flow
 - Backups
 
-### Database behavior
+### Supabase setup
 
-Local development uses SQLite with automatic schema creation and demo seed data. Render uses PostgreSQL with the same schema and seed behavior. Do not commit `data/rcs.db`; production uploads still use the local filesystem, so use image URLs or add object storage before scaling across multiple instances.
+Copy `.env.example` to `.env`, then set `SUPABASE_URL` and `SUPABASE_KEY`. Create a `todos` table in Supabase with a `name` column before opening `/supabase`. The existing club dashboard continues to use its local SQLite schema until its tables are migrated to Supabase.
+
+Do not commit `.env` or `data/rcs.db`; production uploads still use the local filesystem, so use image URLs or add object storage before scaling across multiple instances.
 
 ## 5. Custom domain
 

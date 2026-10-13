@@ -5,19 +5,28 @@ from functools import wraps
 from pathlib import Path
 from flask import Flask, jsonify, request, session, render_template, send_from_directory, redirect
 import config
+from dotenv import load_dotenv
+from supabase import Client, create_client
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 
 BASE = Path(__file__).resolve().parent
+load_dotenv(BASE / ".env")
 DB = BASE / "data" / "rcs.db"
-DATABASE_URL = os.getenv("DATABASE_URL")
-UPLOADS = BASE / "static" / "uploads"
+DATABASE_URL = os.getenv("https://hxetwcocnnxxcunfimyg.supabase.co")
+SUPABASE_KEY=sb_publishable_-MOqlDdcpXskcBAsesbnJg_XqLQZ74iUPLOADS = BASE / "static" / "uploads"
 UPLOADS.mkdir(parents=True, exist_ok=True)
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "rcs-dev-secret-change-me")
 app.config["MAX_CONTENT_LENGTH"] = 8 * 1024 * 1024
 ALLOWED = {"png","jpg","jpeg","webp","gif"}
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+supabase: Client | None = (
+    create_client(SUPABASE_URL, SUPABASE_KEY)
+    if SUPABASE_URL and SUPABASE_KEY else None
+)
 
 class CompatRow(dict):
     def __getitem__(self, key):
@@ -339,6 +348,28 @@ def upload():
 
 @app.get("/health")
 def health(): return jsonify({"status":"ok","service":"RCS Robotics Club"})
+
+@app.get("/api/supabase/todos")
+def supabase_todos():
+    if supabase is None:
+        return jsonify({"error":"SUPABASE_URL and SUPABASE_KEY are not configured"}), 503
+    try:
+        return jsonify(supabase.table("todos").select("*").execute().data)
+    except Exception:
+        app.logger.exception("Supabase todos query failed")
+        return jsonify({"error":"Unable to load todos from Supabase"}), 502
+
+@app.get("/supabase")
+def supabase_page():
+    if supabase is None:
+        return "<h1>Supabase is not configured</h1>", 503
+    try:
+        todos = supabase.table("todos").select("*").execute().data
+    except Exception:
+        app.logger.exception("Supabase todos page query failed")
+        return "<h1>Unable to load todos</h1>", 502
+    items = "".join(f"<li>{todo.get('name', '')}</li>" for todo in todos)
+    return f"<h1>Todos</h1><ul>{items}</ul>"
 
 @app.route("/about")
 def about(): return redirect("/#about")
