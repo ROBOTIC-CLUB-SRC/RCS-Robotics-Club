@@ -28,6 +28,7 @@ py -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 $env:SECRET_KEY="change-this-to-a-long-random-secret"
+$env:DATABASE_URL="postgresql://postgres:YOUR_URL_ENCODED_PASSWORD@db.hxetwcocnnxxcunfimyg.supabase.co:5432/postgres"
 python app.py
 ```
 
@@ -35,6 +36,15 @@ Open:
 - Public website: http://127.0.0.1:5000/
 - Club app: http://127.0.0.1:5000/app
 - Health check: http://127.0.0.1:5000/health
+
+`DATABASE_URL` is required and connects every club data feature (members,
+projects, events, quizzes, games, learning, users, and feedback) directly to
+the Supabase PostgreSQL database. The application does not fall back to a
+local SQLite database. Replace `YOUR_URL_ENCODED_PASSWORD` with the
+Supabase database password. If the password contains characters such as
+`@`, `:`, `/`, or `#`, percent-encode it before putting it in the URL. Keep
+this value in `.env` or your hosting provider's environment settings; never
+commit it.
 
 ### Demo login
 
@@ -80,7 +90,11 @@ Do **not** commit `.env`, `data/rcs.db`, or uploaded private material.
 
 ## 4. Deployment
 
-This repo includes a `render.yaml` + `Procfile` for Render. Supabase is configured through `SUPABASE_URL` and `SUPABASE_KEY` environment variables. The Supabase todo example is available at `/supabase` and `/api/supabase/todos`.
+This repo includes a `render.yaml` + `Procfile` for Render. Set
+`DATABASE_URL` to the Supabase PostgreSQL connection string so the club
+tables and API use Supabase. `SUPABASE_URL` and `SUPABASE_KEY` are only
+needed for the optional Supabase todos example available at `/supabase` and
+`/api/supabase/todos`.
 
 Recommended production stack:
 - Flask API

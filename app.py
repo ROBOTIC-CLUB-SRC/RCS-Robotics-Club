@@ -1,5 +1,6 @@
 import json
-import os, sqlite3
+import os
+from datetime import date, time
 from urllib.parse import quote
 from functools import wraps
 from pathlib import Path
@@ -12,9 +13,8 @@ from werkzeug.utils import secure_filename
 
 BASE = Path(__file__).resolve().parent
 load_dotenv(BASE / ".env")
-DB = BASE / "data" / "rcs.db"
-DATABASE_URL = os.getenv("https://hxetwcocnnxxcunfimyg.supabase.co")
-SUPABASE_KEY=sb_publishable_-MOqlDdcpXskcBAsesbnJg_XqLQZ74iUPLOADS = BASE / "static" / "uploads"
+DATABASE_URL = os.getenv("DATABASE_URL")
+UPLOADS = BASE / "static" / "uploads"
 UPLOADS.mkdir(parents=True, exist_ok=True)
 
 app = Flask(__name__)
@@ -37,6 +37,9 @@ class CompatRow(dict):
 class PostgresConnection:
     def __init__(self, url):
         import psycopg
+        if "sslmode=" not in url:
+            separator = "&" if "?" in url else "?"
+            url = f"{url}{separator}sslmode=require"
         self.con = psycopg.connect(url)
 
     def execute(self, query, params=()):
@@ -60,7 +63,10 @@ class PostgresCursor:
     def _row(self, row):
         if row is None:
             return None
-        return CompatRow({column.name: value for column, value in zip(self.cursor.description, row)})
+        return CompatRow({
+            column.name: value.isoformat() if isinstance(value, (date, time)) else value
+            for column, value in zip(self.cursor.description, row)
+        })
 
     def fetchone(self):
         return self._row(self.cursor.fetchone())
@@ -74,15 +80,16 @@ class PostgresCursor:
         return row[0] if row else None
 
 def db():
-    if DATABASE_URL:
-        return PostgresConnection(DATABASE_URL)
-    con = sqlite3.connect(DB)
-    con.row_factory = sqlite3.Row
-    return con
+    if not DATABASE_URL:
+        raise RuntimeError(
+            "DATABASE_URL is required. Configure the Supabase PostgreSQL "
+            "connection string in .env or the deployment environment."
+        )
+    return PostgresConnection(DATABASE_URL)
 
 def init_db():
     con = db()
-    id_type = "SERIAL" if DATABASE_URL else "INTEGER"
+    id_type = "SERIAL"
     schema = """
     CREATE TABLE IF NOT EXISTS users(
             id {id_type} PRIMARY KEY, name TEXT NOT NULL,
@@ -91,7 +98,7 @@ def init_db():
     );
     CREATE TABLE IF NOT EXISTS members(
             id {id_type} PRIMARY KEY, name TEXT NOT NULL, role TEXT,
-      department TEXT, year TEXT, bio TEXT, image_url TEXT, skills TEXT, featured INTEGER DEFAULT 0
+      department TEXT, year TEXT, bio TEXT, image_url TEXT, skills TEXT, featured BOOLEAN DEFAULT FALSE
     );
     CREATE TABLE IF NOT EXISTS projects(
             id {id_type} PRIMARY KEY, title TEXT NOT NULL, category TEXT,
@@ -118,24 +125,29 @@ def init_db():
       title TEXT, message TEXT NOT NULL, created_at TEXT DEFAULT CURRENT_TIMESTAMP, status TEXT DEFAULT 'new'
     );
     """.format(id_type=id_type)
-    if DATABASE_URL:
-        for statement in schema.split(";"):
-            if statement.strip():
-                con.execute(statement)
-    else:
-        con.executescript(schema)
-    # Demo accounts — change these before deployment.
-    if con.execute("SELECT COUNT(*) FROM users").fetchone()[0] == 0:
-        con.execute("INSERT INTO users(name,email,password,role) VALUES(?,?,?,?)",
-                    ("RCS Faculty","faculty@rcs-sastra.org",generate_password_hash("RCS@2026"),"faculty"))
-        con.execute("INSERT INTO users(name,email,password,role) VALUES(?,?,?,?)",
-                    ("RCS Member","member@rcs-sastra.org",generate_password_hash("RCS@2026"),"member"))
+    for statement in schema.split(";"):
+        if statement.strip():
+            con.execute(statement)
+    # Demo accounts — insert only when the email does not already exist.
+    demo_users = [
+        ("RCS Faculty", "faculty@rcs-sastra.org", "RCS@2026", "faculty"),
+        ("RCS Member", "member@rcs-sastra.org", "RCS@2026", "member"),
+    ]
+    for name, email, password, role in demo_users:
+        con.execute(
+            """
+            INSERT INTO users(name, email, password, role)
+            SELECT ?, ?, ?, ?
+            WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = ?)
+            """,
+            (name, email, generate_password_hash(password), role, email),
+        )
     if con.execute("SELECT COUNT(*) FROM members").fetchone()[0] == 0:
         members = [
-          ("RCS Core Team","Club Lead","Electronics & Communication Engineering","3rd Year","Leads builds, workshops and competitions.","","Embedded Systems, Robotics, ROS",1),
-          ("RCS Core Team","Technical Lead","Electrical & Electronics Engineering","3rd Year","Owns robot architecture, electronics and integration.","","Arduino, ESP32, PCB, Control",1),
-          ("RCS Core Team","AI & Vision Lead","Computer Science & Engineering","3rd Year","Builds perception, computer vision and ML experiments.","","Python, OpenCV, ML",1),
-          ("RCS Volunteer","Mechanical Team","Mechanical Engineering","2nd Year","CAD, fabrication and mechanism design enthusiast.","","CAD, 3D Printing, Mechanisms",0)
+          ("RCS Core Team","Club Lead","Electronics & Communication Engineering","3rd Year","Leads builds, workshops and competitions.","","Embedded Systems, Robotics, ROS",True),
+          ("RCS Core Team","Technical Lead","Electrical & Electronics Engineering","3rd Year","Owns robot architecture, electronics and integration.","","Arduino, ESP32, PCB, Control",True),
+          ("RCS Core Team","AI & Vision Lead","Computer Science & Engineering","3rd Year","Builds perception, computer vision and ML experiments.","","Python, OpenCV, ML",True),
+          ("RCS Volunteer","Mechanical Team","Mechanical Engineering","2nd Year","CAD, fabrication and mechanism design enthusiast.","","CAD, 3D Printing, Mechanisms",False)
         ]
         con.executemany("INSERT INTO members(name,role,department,year,bio,image_url,skills,featured) VALUES(?,?,?,?,?,?,?,?)",members)
     if con.execute("SELECT COUNT(*) FROM projects").fetchone()[0] == 0:
@@ -241,7 +253,7 @@ def public_all():
 @app.post("/api/auth/login")
 def login():
     body=request.get_json(silent=True) or {}
-    con=db(); u=con.execute("SELECT * FROM users WHERE email=? AND active=1",(body.get("email","").strip().lower(),)).fetchone(); con.close()
+    con=db(); u=con.execute("SELECT * FROM users WHERE email=? AND active=TRUE",(body.get("email","").strip().lower(),)).fetchone(); con.close()
     if not u or not check_password_hash(u["password"],body.get("password","")):
         return jsonify({"error":"Invalid email or password"}),401
     session.clear(); session["user_id"]=u["id"]; session["name"]=u["name"]; session["role"]=u["role"]; session["email"]=u["email"]
@@ -295,8 +307,7 @@ def admin_create(table):
     if table=="quizzes" and not b.get("questions_json"): vals[4]="[]"
     con=db()
     insert_sql=f"INSERT INTO {table} ({','.join(fields)}) VALUES ({','.join(['?']*len(fields))})"
-    if DATABASE_URL:
-        insert_sql += " RETURNING id"
+    insert_sql += " RETURNING id"
     cur=con.execute(insert_sql,vals)
     con.commit(); item=dict(con.execute(f"SELECT * FROM {table} WHERE id=?",(cur.lastrowid,)).fetchone()); con.close()
     return jsonify(item),201
@@ -347,7 +358,15 @@ def upload():
     return jsonify({"url":"/static/uploads/"+path.name})
 
 @app.get("/health")
-def health(): return jsonify({"status":"ok","service":"RCS Robotics Club"})
+def health():
+    try:
+        con = db()
+        con.execute("SELECT 1").fetchone()
+        con.close()
+    except Exception:
+        app.logger.exception("Supabase database health check failed")
+        return jsonify({"status":"error","service":"RCS Robotics Club","database":"unavailable"}), 503
+    return jsonify({"status":"ok","service":"RCS Robotics Club","database":"supabase"})
 
 @app.get("/api/supabase/todos")
 def supabase_todos():
@@ -355,8 +374,10 @@ def supabase_todos():
         return jsonify({"error":"SUPABASE_URL and SUPABASE_KEY are not configured"}), 503
     try:
         return jsonify(supabase.table("todos").select("*").execute().data)
-    except Exception:
+    except Exception as error:
         app.logger.exception("Supabase todos query failed")
+        if getattr(error, "code", None) == "PGRST205":
+            return jsonify({"error":"The Supabase todos table is missing. Run migrations/001_create_todos.sql in the Supabase SQL Editor."}), 503
         return jsonify({"error":"Unable to load todos from Supabase"}), 502
 
 @app.get("/supabase")
@@ -365,8 +386,10 @@ def supabase_page():
         return "<h1>Supabase is not configured</h1>", 503
     try:
         todos = supabase.table("todos").select("*").execute().data
-    except Exception:
+    except Exception as error:
         app.logger.exception("Supabase todos page query failed")
+        if getattr(error, "code", None) == "PGRST205":
+            return "<h1>Supabase todos table is missing</h1><p>Run migrations/001_create_todos.sql in the Supabase SQL Editor.</p>", 503
         return "<h1>Unable to load todos</h1>", 502
     items = "".join(f"<li>{todo.get('name', '')}</li>" for todo in todos)
     return f"<h1>Todos</h1><ul>{items}</ul>"
@@ -396,4 +419,3 @@ init_db()
 
 if __name__=="__main__":
     app.run(host="0.0.0.0", port=int(os.getenv("PORT","5000")), debug=True)
-

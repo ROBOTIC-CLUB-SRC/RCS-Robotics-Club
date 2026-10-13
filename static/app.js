@@ -494,7 +494,7 @@ function stepPathMove(btn, move) {
 
 // Navigation mobile toggle
 function toggleNav() {
-  const menu = document.getElementById('navMenu');
+  const menu = document.getElementById('navMenu') || document.getElementById('navLinks');
   if (menu) menu.classList.toggle('open');
 }
 
