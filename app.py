@@ -14,6 +14,7 @@ from werkzeug.utils import secure_filename
 BASE = Path(__file__).resolve().parent
 load_dotenv(BASE / ".env")
 DATABASE_URL = os.getenv("DATABASE_URL")
+# Render supplies the database and Supabase credentials through environment variables.
 UPLOADS = BASE / "static" / "uploads"
 UPLOADS.mkdir(parents=True, exist_ok=True)
 
